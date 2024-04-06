@@ -2,5 +2,7 @@
 * -linguist-vendored linguist-detectable
 *.h linguist-language=C
 *.hook linguist-language=INI
+*.install linguist-language=Shell
 *.patch linguist-vendored
+/.github/packages/*/package.txt linguist-vendored
 /.github/workflows/*.yml linguist-generated

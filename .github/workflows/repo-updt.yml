@@ -77,7 +77,11 @@ jobs:
           git config --global pull.rebase true
           git config --global safe.directory "*"
           git config --global user.email seele@0h7z.com
-          git config --global user.name Seele
+          git config --global user.name  Seele
           git config --global user.signingkey ~/.ssh/id_ecdsa.pub
-          git add --all && git commit --allow-empty-message -m 'Update' || true
+          git add --all && git commit --allow-empty-message -m 'Update'; e=$?
           git pull -ftp && git push
+          git rev-parse HEAD | tee | read sha
+          ((e)) || curl -LX POST -H 'Authorization: Seele <${{ secrets.PAT }}>' \
+           -d '{ "body": "@Heptazhou" }' \
+          ${{ github.api_url }}/repos/${{ github.repository }}/commits/$sha/comments

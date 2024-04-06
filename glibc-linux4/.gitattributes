@@ -1,2 +1,4 @@
 
+locale-gen linguist-vendored
+locale.gen.txt linguist-vendored
 sdt.h linguist-vendored

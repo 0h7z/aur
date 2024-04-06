@@ -17,7 +17,8 @@ using OrderedCollections: LittleDict as LDict
 using OrderedCollections: OrderedDict as ODict
 using YAML: YAML, yaml
 
-const PACKAGER = "Seele <seele@0h7z.com>"
+const NAME, MAIL = "Seele", "seele@0h7z.com"
+const PACKAGER = "$NAME <$MAIL>"
 const StrOrSym = Union{AbstractString, Symbol}
 const URL_AUR = "https://aur.archlinux.org"
 const URL_DEB = "https://deb.debian.org/debian"
@@ -72,11 +73,17 @@ const ACT_PUSH(msg::StrOrSym; m = escape(msg, "'")) = ACT_RUN("""
 	git config --global init.defaultbranch master
 	git config --global pull.rebase true
 	git config --global safe.directory "*"
-	git config --global user.email $(strip(∈("<>"), split(PACKAGER)[end]))
-	git config --global user.name $(rsplit(PACKAGER, limit = 2)[begin])
+	git config --global user.email $MAIL
+	git config --global user.name  $NAME
 	git config --global user.signingkey ~/.ssh/id_ecdsa.pub
-	git add --all && git commit --allow-empty-message -m '$m' || true
-	git pull -ftp && git push"""
+	git add --all && git commit --allow-empty-message -m '$m'; e=\$?
+	git pull -ftp && git push
+	git rev-parse HEAD | tee | read sha
+	((e)) || curl -LX POST \
+	 -H 'Authorization: $NAME <\${{ secrets.PAT }}>' \\
+	 -d '{ "body": "@Heptazhou" }' \\
+	\${{ github.api_url }}/repos/\${{ github.repository }}/commits/\
+	\$sha/comments""" # https://docs.github.com/rest/commits/comments
 )
 const ACT_RUN(cmd::StrOrSym, envs::Pair...) = ODict(
 	S"run" => cmd, S"env" => ODict(envs...),
@@ -93,7 +100,7 @@ const ACT_SYNC(pkgbase::StrOrSym) = ODict(
 		S"github_token"       => S"${{ secrets.PAT }}",
 	),
 )
-const ACT_UPDT(dict::AbstractDict, rel::String) = ACT_RUN.("""
+const ACT_UPDT(dict::AbstractDict, rel::StrOrSym) = ACT_RUN.("""
 	mkdir .github/packages/$pkg -p
 	cd -- .github/packages/$pkg
 	apt list -a $(join(src, " ")) 2> /dev/null || true
@@ -113,7 +120,7 @@ const ACT_UPDT(dict::AbstractDict, rel::String) = ACT_RUN.("""
 	""" for (pkg, src) ∈ dict
 )
 
-const JOB_MAKE(pkgbases::Vector{String}, tag::String) = ODict(
+const JOB_MAKE(pkgbases::Vector{String}, tag::StrOrSym) = ODict(
 	S"container" => S"archlinux:base-devel",
 	S"runs-on" => S"ubuntu-latest",
 	S"steps" => [
@@ -142,7 +149,7 @@ const JOB_SYNC(pkgbase::String) = ODict(
 	S"runs-on" => S"ubuntu-latest",
 	S"steps"   => [ACT_CHECKOUT(), ACT_SYNC(pkgbase)],
 )
-const JOB_UPDT(dict::AbstractDict, rel::String) = ODict(
+const JOB_UPDT(dict::AbstractDict, rel::StrOrSym) = ODict(
 	S"container" => S"archlinux:base-devel",
 	S"runs-on" => S"ubuntu-latest",
 	S"steps" => [
@@ -167,20 +174,22 @@ const JOB_UPDT(dict::AbstractDict, rel::String) = ODict(
 
 function makepkg(pkgbases::Vector{String}, v::String)
 	p = pkgbases[end]
-	f = ".github/packages/$p/version.txt"
+	q = ".github/packages/$p/version.txt"
+	mkpath(dirname(q))
+	write(q, "$p-v$v", "\n")
+	f = ".github/workflows/make-$p.yml"
 	mkpath(dirname(f))
-	write(f, "$p-v$v", "\n")
-	write(".github/workflows/make-$p.yml",
+	write(f,
 		yaml(
 			S"on" => ODict(
 				S"workflow_dispatch" => nothing,
 				S"push" => ODict(
 					S"branches" => ["master"],
-					S"paths"    => [f],
+					S"paths"    => [q],
 				),
 			),
 			S"jobs" => ODict(
-				S"makepkg" => JOB_MAKE(pkgbases, "$p-v$v"),
+				S"makepkg" => JOB_MAKE(pkgbases, readchomp(q)),
 			),
 		),
 	)
@@ -200,12 +209,12 @@ function syncpkg(pkgbases::Vector{String})
 				S"schedule" => [ODict(S"cron" => "0 */4 * * *")],
 			),
 			S"jobs" => ODict(
-				p(pkg) => JOB_SYNC(pkg) for pkg ∈ pkgbases
+				@. p(pkgbases) => JOB_SYNC(pkgbases)
 			),
 		),
 	)
 end
-function updtpkg(dict::AbstractDict, rel::String)
+function updtpkg(dict::AbstractDict, rel::StrOrSym)
 	f = ".github/workflows/repo-updt.yml"
 	mkpath(dirname(f))
 	write(f,
