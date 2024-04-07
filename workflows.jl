@@ -13,14 +13,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using JSON: json
 using OrderedCollections: LittleDict as LDict
 using OrderedCollections: OrderedDict as ODict
 using YAML: YAML, yaml
 
 const NAME, MAIL = "Seele", "seele@0h7z.com"
 const PACKAGER = "$NAME <$MAIL>"
-const PUSH_CMT = ODict(:body => "@Heptazhou\n")
 const PUSH_NOP = "Everything up-to-date"
 const StrOrSym = Union{AbstractString, Symbol}
 const URL_AUR = "https://aur.archlinux.org"
@@ -86,9 +84,12 @@ const ACT_PUSH(msg::StrOrSym; m = cquote(msg)) = ACT_RUN("""
 	sha=`cat /tmp/head` u=\${{ github.api_url }}/repos/\
 	\${{ github.repository }}/commits/\$sha/comments
 	grep $(cquote(PUSH_NOP)) /tmp/push -ax && exit
+	echo @Heptazhou > /tmp/md
+	echo '```s'    >> /tmp/md && git show --stat HEAD~1 >> /tmp/md
+	echo '```'     >> /tmp/md
 	echo \$u && curl -LX POST \
 	 -H 'Authorization: token \${{ secrets.PAT }}' \\
-	 -d $(cquote(json(PUSH_CMT))) \
+	 -d `cat /tmp/md | jq -Rs '{ body: . }'` \
 	\$u""" # https://docs.github.com/rest/commits/comments
 )
 const ACT_RUN(cmd::StrOrSym, envs::Pair...) = ODict(
@@ -159,7 +160,7 @@ const JOB_UPDT(dict::AbstractDict, rel::StrOrSym) = ODict(
 	S"container" => S"archlinux:base-devel",
 	S"runs-on" => S"ubuntu-latest",
 	S"steps" => [
-		ACT_INIT(["apt", "debian-archive-keyring", "openssh"])
+		ACT_INIT(["apt", "debian-archive-keyring", "jq", "openssh"])
 		ACT_CHECKOUT(
 			S"persist-credentials" => true,
 			S"token" => S"${{ secrets.PAT }}",
@@ -246,7 +247,7 @@ const pkg = ODict(
 	["7-zip-full"]             => (1, 1, "23.01-4"),
 	["conda-zsh-completion"]   => (1, 0, "0.11-1"),
 	["glibc-linux4"]           => (1, 0, "2.38-1"),
-	["iraf-bin"]               => (1, 0, "2.18-1"),
+	["iraf-bin"]               => (1, 1, "2.18-1"),
 	["libcurl-julia-bin"]      => (1, 1, "1.10-1"),
 	["locale-mul_zz"]          => (1, 0, "2.0-3"),
 	["mingw-w64-zlib", "nsis"] => (1, 1, "3.09-1"),

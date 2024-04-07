@@ -26,7 +26,7 @@ jobs:
           pacman -Syu --noconfirm dbus-daemon-units git pacman-contrib
           sed -r 's/\b(EUID)\s*==\s*0\b/\1 < -0/' -i /bin/makepkg
           makepkg --version
-      - run: pacman -S --noconfirm apt debian-archive-keyring openssh
+      - run: pacman -S --noconfirm apt debian-archive-keyring jq openssh
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
@@ -84,5 +84,8 @@ jobs:
           git rev-parse HEAD | tee /tmp/head
           sha=`cat /tmp/head` u=${{ github.api_url }}/repos/${{ github.repository }}/commits/$sha/comments
           grep $'Everything up-to-date' /tmp/push -ax && exit
+          echo @Heptazhou > /tmp/md
+          echo '```s'    >> /tmp/md && git show --stat HEAD~1 >> /tmp/md
+          echo '```'     >> /tmp/md
           echo $u && curl -LX POST -H 'Authorization: token ${{ secrets.PAT }}' \
-           -d $'{"body":"@Heptazhou\\n"}' $u
+           -d `cat /tmp/md | jq -Rs '{ body: . }'` $u
