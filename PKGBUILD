@@ -3,9 +3,9 @@
 pkgbase_=iraf
 pkgname_=($pkgbase_{,-noao})
 pkgname=(${pkgname_[@]/%/-bin})
-debver=2.17.1-5
-pkgver=2.17.1
-pkgrel=4
+debver=2.18-1
+pkgver=2.18
+pkgrel=1
 pkgdesc="IRAF - Image Reduction and Analysis Facility"
 arch=("x86_64")
 url="https://github.com/iraf-community/$pkgbase_"
@@ -15,8 +15,8 @@ options=(!debug)
 noextract=(${pkgname_[@]/%/_${debver}_amd64.deb})
 source=(${noextract[@]/#/${url_}/})
 sha256sums=(
-	"72122b4274fe2db881f3ac0a9da226ba0498570311dc83efe571fd44a7df0226"
-	"4520541e76cb2d5bf4fc8e6f84efe233581798526b230aec5624b4672f7a1570"
+	"37c946f6ab4ab2cc7697765ee7252fc9bc6d90e8e3d7c7a9901e5d61f31b0b8f"
+	"ca89822f6fe255ca8acc64cc406ba28d9475149768b5f1f755a780ee34449605"
 )
 # https://tracker.debian.org/pkg/iraf
 
@@ -31,7 +31,7 @@ prepare() {
 package_iraf-bin() {
 	provides=("$pkgbase_")
 	conflicts=("$pkgbase_")
-	depends=("bash" "cfitsio" "expat")
+	depends=("glibc" "readline" "sh")
 	optdepends=(
 		"$pkgbase_-noao: IRAF NOAO data reduction package"
 		"ds9: Image display tool for astronomy"
