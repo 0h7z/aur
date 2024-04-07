@@ -13,12 +13,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using JSON: json
 using OrderedCollections: LittleDict as LDict
 using OrderedCollections: OrderedDict as ODict
 using YAML: YAML, yaml
 
 const NAME, MAIL = "Seele", "seele@0h7z.com"
 const PACKAGER = "$NAME <$MAIL>"
+const PUSH_CMT = ODict(:body => "@Heptazhou\n")
 const StrOrSym = Union{AbstractString, Symbol}
 const URL_AUR = "https://aur.archlinux.org"
 const URL_DEB = "https://deb.debian.org/debian"
@@ -26,8 +28,9 @@ const YAML.yaml(xs...) = join(map(yaml, xs), "\n")
 macro S_str(string)
 	:(Symbol($string))
 end
-const escape(x::StrOrSym, xs...; kw...) = escape_string(x, xs...; kw...)
-const escape(x::Symbol, xs...; kw...) = escape(String(x), xs...; kw...)
+const cquote(s::StrOrSym) = "\$'$(escape(s, "'"))'"
+const escape(s::StrOrSym, xs...; kw...) = escape_string(s, xs...; kw...)
+const escape(sym::Symbol, xs...; kw...) = escape(string(sym), xs...; kw...)
 const mirror = [
 	raw"https://mirrors.dotsrc.org/archlinux/$repo/os/$arch"
 	raw"https://mirrors.kernel.org/archlinux/$repo/os/$arch"
@@ -66,7 +69,7 @@ const ACT_INIT(cmd::StrOrSym, envs::Pair...) = ACT_RUN("""
 const ACT_INIT(pkg::Vector{String}) = ACT_INIT(
 	Symbol(join(["pacman -S --noconfirm"; pkg], " ")),
 )
-const ACT_PUSH(msg::StrOrSym; m = escape(msg, "'")) = ACT_RUN("""
+const ACT_PUSH(msg::StrOrSym; m = cquote(msg)) = ACT_RUN("""
 	git version
 	git config --global commit.gpgsign true
 	git config --global gpg.format ssh
@@ -76,14 +79,15 @@ const ACT_PUSH(msg::StrOrSym; m = escape(msg, "'")) = ACT_RUN("""
 	git config --global user.email $MAIL
 	git config --global user.name  $NAME
 	git config --global user.signingkey ~/.ssh/id_ecdsa.pub
-	git add --all && git commit --allow-empty-message -m '$m'; e=\$?
+	git add --all && git commit --allow-empty-message -m $m && e=0 || e=1
 	git pull -ftp && git push
-	git rev-parse HEAD | tee | read sha
-	((e)) || curl -LX POST \
-	 -H 'Authorization: $NAME <\${{ secrets.PAT }}>' \\
-	 -d '{ "body": "@Heptazhou" }' \\
-	\${{ github.api_url }}/repos/\${{ github.repository }}/commits/\
-	\$sha/comments""" # https://docs.github.com/rest/commits/comments
+	git rev-parse HEAD | tee /tmp/head && \\
+	sha=`cat /tmp/head` u="\${{ github.api_url }}/repos/\
+	\${{ github.repository }}/commits/\$sha/comments"
+	((e)) || echo \$u && curl -LX POST \
+	 -H 'Authorization: token \${{ secrets.PAT }}' \\
+	 -d $(cquote(json(PUSH_CMT))) \
+	\$u""" # https://docs.github.com/rest/commits/comments
 )
 const ACT_RUN(cmd::StrOrSym, envs::Pair...) = ODict(
 	S"run" => cmd, S"env" => ODict(envs...),
