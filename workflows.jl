@@ -21,6 +21,7 @@ using YAML: YAML, yaml
 const NAME, MAIL = "Seele", "seele@0h7z.com"
 const PACKAGER = "$NAME <$MAIL>"
 const PUSH_CMT = ODict(:body => "@Heptazhou\n")
+const PUSH_NOP = "Everything up-to-date"
 const StrOrSym = Union{AbstractString, Symbol}
 const URL_AUR = "https://aur.archlinux.org"
 const URL_DEB = "https://deb.debian.org/debian"
@@ -79,12 +80,13 @@ const ACT_PUSH(msg::StrOrSym; m = cquote(msg)) = ACT_RUN("""
 	git config --global user.email $MAIL
 	git config --global user.name  $NAME
 	git config --global user.signingkey ~/.ssh/id_ecdsa.pub
-	git add --all && git commit --allow-empty-message -m $m && e=0 || e=1
-	git pull -ftp && git push
-	git rev-parse HEAD | tee /tmp/head && \\
-	sha=`cat /tmp/head` u="\${{ github.api_url }}/repos/\
-	\${{ github.repository }}/commits/\$sha/comments"
-	((e)) || echo \$u && curl -LX POST \
+	git add --all && git commit --allow-empty-message -m $m || true
+	git pull -ftp && git push |& tee /tmp/push
+	git rev-parse HEAD | tee /tmp/head
+	sha=`cat /tmp/head` u=\${{ github.api_url }}/repos/\
+	\${{ github.repository }}/commits/\$sha/comments
+	grep $(cquote(PUSH_NOP)) /tmp/push -ax && exit
+	echo \$u && curl -LX POST \
 	 -H 'Authorization: token \${{ secrets.PAT }}' \\
 	 -d $(cquote(json(PUSH_CMT))) \
 	\$u""" # https://docs.github.com/rest/commits/comments
@@ -244,7 +246,7 @@ const pkg = ODict(
 	["7-zip-full"]             => (1, 1, "23.01-4"),
 	["conda-zsh-completion"]   => (1, 0, "0.11-1"),
 	["glibc-linux4"]           => (1, 0, "2.38-1"),
-	["iraf-bin"]               => (1, 0, "2.17.1-5"),
+	["iraf-bin"]               => (1, 0, "2.18-1"),
 	["libcurl-julia-bin"]      => (1, 1, "1.10-1"),
 	["locale-mul_zz"]          => (1, 0, "2.0-3"),
 	["mingw-w64-zlib", "nsis"] => (1, 1, "3.09-1"),

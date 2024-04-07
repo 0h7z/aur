@@ -14,9 +14,9 @@ pkgbase = iraf-bin
 	sha256sums = ca89822f6fe255ca8acc64cc406ba28d9475149768b5f1f755a780ee34449605
 
 pkgname = iraf-bin
-	depends = bash
-	depends = cfitsio
-	depends = expat
+	depends = glibc
+	depends = readline
+	depends = sh
 	optdepends = iraf-noao: IRAF NOAO data reduction package
 	optdepends = ds9: Image display tool for astronomy
 	optdepends = xgterm: Terminal emulator to work with IRAF

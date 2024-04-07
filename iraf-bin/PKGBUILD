@@ -31,7 +31,7 @@ prepare() {
 package_iraf-bin() {
 	provides=("$pkgbase_")
 	conflicts=("$pkgbase_")
-	depends=("bash" "cfitsio" "expat")
+	depends=("glibc" "readline" "sh")
 	optdepends=(
 		"$pkgbase_-noao: IRAF NOAO data reduction package"
 		"ds9: Image display tool for astronomy"
