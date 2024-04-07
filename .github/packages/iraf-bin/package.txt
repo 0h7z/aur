@@ -1,10 +1,9 @@
 Package: iraf
-Source: iraf (2.17.1-5)
-Version: 2.17.1-5+b1
-Installed-Size: 32285
+Version: 2.18-1
+Installed-Size: 31749
 Maintainer: Debian Astro Team <debian-astro-maintainers@lists.alioth.debian.org>
 Architecture: amd64
-Depends: libc6 (>= 2.34), libcfitsio10t64 (>= 4.2.0~), libcurl4t64 (>= 7.16.2), libexpat1 (>= 2.0.1), libreadline8t64 (>= 6.0)
+Depends: libc6 (>= 2.34), libreadline8t64 (>= 6.0)
 Recommends: iraf-noao, saods9 | ximtool, xgterm | python3-pyraf | xterm
 Suggests: iraf-dev
 Description-en: Image Reduction and Analysis Facility
@@ -25,18 +24,18 @@ Multi-Arch: foreign
 Homepage: https://iraf-community.github.io
 Section: science
 Priority: optional
-Filename: pool/main/i/iraf/iraf_2.17.1-5+b1_amd64.deb
-Size: 7048736
-MD5sum: 94de580f7bc795a0df3a2897b6daa1f8
-SHA256: 444a4ce7f9a57b71766ead783f18de8f6a7ab35bbac53bfda7a1f4bbeed315bd
+Filename: pool/main/i/iraf/iraf_2.18-1_amd64.deb
+Size: 6923700
+MD5sum: b19c2c2e7fbaac84874e09f095fa444b
+SHA256: 37c946f6ab4ab2cc7697765ee7252fc9bc6d90e8e3d7c7a9901e5d61f31b0b8f
 
 Package: iraf-noao
-Source: iraf (2.17.1-5)
-Version: 2.17.1-5+b1
-Installed-Size: 46093
+Source: iraf
+Version: 2.18-1
+Installed-Size: 46296
 Maintainer: Debian Astro Team <debian-astro-maintainers@lists.alioth.debian.org>
 Architecture: amd64
-Depends: iraf (= 2.17.1-5+b1), libc6 (>= 2.34), libcfitsio10t64 (>= 4.2.0~), libcurl4t64 (>= 7.16.2), libexpat1 (>= 2.0.1)
+Depends: iraf (= 2.18-1), libc6 (>= 2.34)
 Description-en: IRAF NOAO data reduction package
  IRAF is the "Image Reduction and Analysis Facility". The main
  IRAF distribution includes a good selection of programs for
@@ -51,8 +50,8 @@ Multi-Arch: foreign
 Homepage: https://iraf-community.github.io
 Section: science
 Priority: optional
-Filename: pool/main/i/iraf/iraf-noao_2.17.1-5+b1_amd64.deb
-Size: 9090748
-MD5sum: a8b7310de42813013c16cc3efa0d7d9e
-SHA256: d6179e538ace8a834ab59675b7fcf11f0f5d7055f9ae7ab7dd2bbdbd1fde1da5
+Filename: pool/main/i/iraf/iraf-noao_2.18-1_amd64.deb
+Size: 9150460
+MD5sum: 21fce4978b9260d7249814c4c292a6b0
+SHA256: ca89822f6fe255ca8acc64cc406ba28d9475149768b5f1f755a780ee34449605
 
