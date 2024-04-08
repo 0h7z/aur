@@ -17,6 +17,7 @@ using OrderedCollections: LittleDict as LDict
 using OrderedCollections: OrderedDict as ODict
 using YAML: YAML, yaml
 
+const COMPRESS = "zstdmt -17 -M1024M --long"
 const NAME, MAIL = "Seele", "seele@0h7z.com"
 const PACKAGER = "$NAME <$MAIL>"
 const PUSH_NOP = "Everything up-to-date"
@@ -58,8 +59,9 @@ const ACT_INIT(cmd::StrOrSym, envs::Pair...) = ACT_RUN("""
 	echo -e 'Server = $(mirror[1])' >> mirrorlist
 	echo -e 'Server = $(mirror[2])' >> mirrorlist
 	tac mirrorlist > mirrorlist~ && mv mirrorlist{~,} && cd /etc
+	sed -r 's/^(COMPRESSZST)=.*/\\1=($COMPRESS)/' -i makepkg.conf
 	sed -r 's/^#(MAKEFLAGS)=.*/\\1="-j`nproc`"/' -i makepkg.conf
-	sed -r 's/^#(PACKAGER)=.*/\\1="$PACKAGER"/'  -i makepkg.conf
+	sed -r 's/^#(PACKAGER)=.*/\\1="$PACKAGER"/' -i makepkg.conf
 	pacman-key --init""", """
 	pacman -Syu --noconfirm dbus-daemon-units git pacman-contrib
 	sed -r 's/\\b(EUID)\\s*==\\s*0\\b/\\1 < -0/' -i /bin/makepkg
@@ -73,6 +75,7 @@ const ACT_PUSH(msg::StrOrSym; m = cquote(msg)) = ACT_RUN("""
 	git config --global commit.gpgsign true
 	git config --global gpg.format ssh
 	git config --global init.defaultbranch master
+	git config --global log.date iso
 	git config --global pull.rebase true
 	git config --global safe.directory "*"
 	git config --global user.email $MAIL
@@ -85,7 +88,7 @@ const ACT_PUSH(msg::StrOrSym; m = cquote(msg)) = ACT_RUN("""
 	\${{ github.repository }}/commits/\$sha/comments
 	grep $(cquote(PUSH_NOP)) /tmp/push -ax && exit
 	echo @Heptazhou > /tmp/md
-	echo '```s'    >> /tmp/md && git show --stat HEAD~1 >> /tmp/md
+	echo '```s'    >> /tmp/md && git show --stat -w >> /tmp/md
 	echo '```'     >> /tmp/md
 	echo \$u && curl -LX POST \
 	 -H 'Authorization: token \${{ secrets.PAT }}' \\
