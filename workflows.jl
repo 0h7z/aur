@@ -248,6 +248,7 @@ end
 const pkg = ODict(
 	# [depends..., pkgbase]    => (sync, make, pkgver_pkgrel),
 	["7-zip-full"]             => (1, 1, "23.01-4"),
+	["apt-zsh-completion"]     => (0, 0, "5.9-1"),
 	["conda-zsh-completion"]   => (1, 0, "0.11-1"),
 	["glibc-linux4"]           => (1, 0, "2.38-1"),
 	["iraf-bin"]               => (1, 1, "2.18-1"),
