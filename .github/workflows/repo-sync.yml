@@ -21,6 +21,18 @@ jobs:
           source_branch: master
           destination_branch: 7-zip-full
           github_token: ${{ secrets.PAT }}
+  apt-zsh-completion:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: heptazhou/github-sync@v2.3.0
+        with:
+          source_repo: https://aur.archlinux.org/apt-zsh-completion.git
+          source_branch: master
+          destination_branch: apt-zsh-completion
+          github_token: ${{ secrets.PAT }}
   conda-zsh-completion:
     runs-on: ubuntu-latest
     steps:
