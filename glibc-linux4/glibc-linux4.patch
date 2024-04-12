@@ -1,5 +1,28 @@
+ nptl/futex-internal.c                         | 8 ++------
+ sysdeps/unix/sysv/linux/clock_adjtime.c       | 3 ++-
+ sysdeps/unix/sysv/linux/clock_getcpuclockid.c | 2 +-
+ sysdeps/unix/sysv/linux/clock_getres.c        | 4 ++--
+ sysdeps/unix/sysv/linux/clock_nanosleep.c     | 3 +--
+ sysdeps/unix/sysv/linux/clock_settime.c       | 3 ++-
+ sysdeps/unix/sysv/linux/faccessat.c           | 3 ++-
+ sysdeps/unix/sysv/linux/kernel-features.h     | 4 ++--
+ sysdeps/unix/sysv/linux/mq_timedreceive.c     | 4 ++--
+ sysdeps/unix/sysv/linux/mq_timedsend.c        | 4 ++--
+ sysdeps/unix/sysv/linux/ppoll.c               | 4 ++--
+ sysdeps/unix/sysv/linux/pselect.c             | 4 ++--
+ sysdeps/unix/sysv/linux/recvmmsg.c            | 4 ++--
+ sysdeps/unix/sysv/linux/sched_rr_gi.c         | 3 ++-
+ sysdeps/unix/sysv/linux/select.c              | 4 ++--
+ sysdeps/unix/sysv/linux/semtimedop.c          | 3 ++-
+ sysdeps/unix/sysv/linux/timer_gettime.c       | 3 ++-
+ sysdeps/unix/sysv/linux/timer_settime.c       | 3 +--
+ sysdeps/unix/sysv/linux/timerfd_gettime.c     | 3 ++-
+ sysdeps/unix/sysv/linux/timerfd_settime.c     | 4 ++--
+ sysdeps/unix/sysv/linux/utimensat.c           | 4 ++--
+ 21 files changed, 39 insertions(+), 38 deletions(-)
+
 diff --git a/nptl/futex-internal.c b/nptl/futex-internal.c
-index 5a64d14338..e9fb108111 100644
+index 0bb1dd51f6..4fe43812e9 100644
 --- a/nptl/futex-internal.c
 +++ b/nptl/futex-internal.c
 @@ -54,13 +54,9 @@ __futex_abstimed_wait_common64 (unsigned int* futex_word,
@@ -19,7 +42,7 @@ index 5a64d14338..e9fb108111 100644
  
  static int
 diff --git a/sysdeps/unix/sysv/linux/clock_adjtime.c b/sysdeps/unix/sysv/linux/clock_adjtime.c
-index bd6663431c..fd771e9ad5 100644
+index 8c8d2aa260..89e5bceb82 100644
 --- a/sysdeps/unix/sysv/linux/clock_adjtime.c
 +++ b/sysdeps/unix/sysv/linux/clock_adjtime.c
 @@ -29,7 +29,8 @@ __clock_adjtime64 (const clockid_t clock_id, struct __timex64 *tx64)
@@ -33,7 +56,7 @@ index bd6663431c..fd771e9ad5 100644
    if (r >= 0 || errno != ENOSYS)
      return r;
 diff --git a/sysdeps/unix/sysv/linux/clock_getcpuclockid.c b/sysdeps/unix/sysv/linux/clock_getcpuclockid.c
-index 5f01225542..ae1e9abc0b 100644
+index 736ffcc161..3b7389d8a5 100644
 --- a/sysdeps/unix/sysv/linux/clock_getcpuclockid.c
 +++ b/sysdeps/unix/sysv/linux/clock_getcpuclockid.c
 @@ -34,7 +34,7 @@ __clock_getcpuclockid (pid_t pid, clockid_t *clock_id)
@@ -46,7 +69,7 @@ index 5f01225542..ae1e9abc0b 100644
  #ifndef __ASSUME_TIME64_SYSCALLS
    if (r != 0 && r == -ENOSYS)
 diff --git a/sysdeps/unix/sysv/linux/clock_getres.c b/sysdeps/unix/sysv/linux/clock_getres.c
-index da2cb90f5c..39ee38a078 100644
+index 89119ed8e5..4c1614e08c 100644
 --- a/sysdeps/unix/sysv/linux/clock_getres.c
 +++ b/sysdeps/unix/sysv/linux/clock_getres.c
 @@ -35,9 +35,9 @@ __clock_getres64 (clockid_t clock_id, struct __timespec64 *res)
@@ -62,7 +85,7 @@ index da2cb90f5c..39ee38a078 100644
    if (r == 0 || errno != ENOSYS)
      return r;
 diff --git a/sysdeps/unix/sysv/linux/clock_nanosleep.c b/sysdeps/unix/sysv/linux/clock_nanosleep.c
-index ac2d810632..12c1c976f5 100644
+index 7f9d4e1224..bd2deb26d1 100644
 --- a/sysdeps/unix/sysv/linux/clock_nanosleep.c
 +++ b/sysdeps/unix/sysv/linux/clock_nanosleep.c
 @@ -50,8 +50,7 @@ __clock_nanosleep_time64 (clockid_t clock_id, int flags,
@@ -76,7 +99,7 @@ index ac2d810632..12c1c976f5 100644
  	r = -EOVERFLOW;
      }
 diff --git a/sysdeps/unix/sysv/linux/clock_settime.c b/sysdeps/unix/sysv/linux/clock_settime.c
-index 68e8b0ce12..26e1e75a35 100644
+index f1f4f361d7..505febaefc 100644
 --- a/sysdeps/unix/sysv/linux/clock_settime.c
 +++ b/sysdeps/unix/sysv/linux/clock_settime.c
 @@ -35,7 +35,8 @@ __clock_settime64 (clockid_t clock_id, const struct __timespec64 *tp)
@@ -90,7 +113,7 @@ index 68e8b0ce12..26e1e75a35 100644
  #ifndef __ASSUME_TIME64_SYSCALLS
    if (ret == 0 || errno != ENOSYS)
 diff --git a/sysdeps/unix/sysv/linux/faccessat.c b/sysdeps/unix/sysv/linux/faccessat.c
-index 0ccbd778b5..f373741afe 100644
+index 2fa57fd63d..1c74e62712 100644
 --- a/sysdeps/unix/sysv/linux/faccessat.c
 +++ b/sysdeps/unix/sysv/linux/faccessat.c
 @@ -26,7 +26,8 @@
@@ -104,10 +127,10 @@ index 0ccbd778b5..f373741afe 100644
    return ret;
  #else
 diff --git a/sysdeps/unix/sysv/linux/kernel-features.h b/sysdeps/unix/sysv/linux/kernel-features.h
-index 07b440f4ee..3be0f500a4 100644
+index a25cf07e9f..d09c70e41f 100644
 --- a/sysdeps/unix/sysv/linux/kernel-features.h
 +++ b/sysdeps/unix/sysv/linux/kernel-features.h
-@@ -210,7 +210,7 @@
+@@ -207,7 +207,7 @@
  #if __LINUX_KERNEL_VERSION >= 0x050100                          \
    || __WORDSIZE == 64                                           \
    || (defined __SYSCALL_WORDSIZE && __SYSCALL_WORDSIZE == 64)
@@ -116,7 +139,7 @@ index 07b440f4ee..3be0f500a4 100644
  #endif
  
  /* Linux waitid prior kernel 5.4 does not support waiting for the current
-@@ -222,7 +222,7 @@
+@@ -219,7 +219,7 @@
  /* The faccessat2 system call was introduced across all architectures
     in Linux 5.8.  */
  #if __LINUX_KERNEL_VERSION >= 0x050800
@@ -126,7 +149,7 @@ index 07b440f4ee..3be0f500a4 100644
  # define __ASSUME_FACCESSAT2 0
  #endif
 diff --git a/sysdeps/unix/sysv/linux/mq_timedreceive.c b/sysdeps/unix/sysv/linux/mq_timedreceive.c
-index 6391e0026b..89815deb5d 100644
+index f2f24ea85d..61ad63aa50 100644
 --- a/sysdeps/unix/sysv/linux/mq_timedreceive.c
 +++ b/sysdeps/unix/sysv/linux/mq_timedreceive.c
 @@ -39,8 +39,8 @@ ___mq_timedreceive_time64 (mqd_t mqdes, char *__restrict msg_ptr, size_t msg_len
@@ -141,7 +164,7 @@ index 6391e0026b..89815deb5d 100644
  	return r;
        __set_errno (EOVERFLOW);
 diff --git a/sysdeps/unix/sysv/linux/mq_timedsend.c b/sysdeps/unix/sysv/linux/mq_timedsend.c
-index 40d475a141..b7d19f6b7a 100644
+index a0ccda9408..a6b94fb9e2 100644
 --- a/sysdeps/unix/sysv/linux/mq_timedsend.c
 +++ b/sysdeps/unix/sysv/linux/mq_timedsend.c
 @@ -39,8 +39,8 @@ ___mq_timedsend_time64 (mqd_t mqdes, const char *msg_ptr, size_t msg_len,
@@ -156,7 +179,7 @@ index 40d475a141..b7d19f6b7a 100644
  	return r;
        __set_errno (EOVERFLOW);
 diff --git a/sysdeps/unix/sysv/linux/ppoll.c b/sysdeps/unix/sysv/linux/ppoll.c
-index 078eba3031..3f27c3d485 100644
+index 39e78008db..dda711d2c8 100644
 --- a/sysdeps/unix/sysv/linux/ppoll.c
 +++ b/sysdeps/unix/sysv/linux/ppoll.c
 @@ -46,8 +46,8 @@ __ppoll64 (struct pollfd *fds, nfds_t nfds, const struct __timespec64 *timeout,
@@ -171,7 +194,7 @@ index 078eba3031..3f27c3d485 100644
  	return ret;
        __set_errno (EOVERFLOW);
 diff --git a/sysdeps/unix/sysv/linux/pselect.c b/sysdeps/unix/sysv/linux/pselect.c
-index 7fab25c19e..54ad5d0364 100644
+index f973726162..af03925872 100644
 --- a/sysdeps/unix/sysv/linux/pselect.c
 +++ b/sysdeps/unix/sysv/linux/pselect.c
 @@ -59,8 +59,8 @@ __pselect64 (int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds,
@@ -186,7 +209,7 @@ index 7fab25c19e..54ad5d0364 100644
  	return r;
        __set_errno (EOVERFLOW);
 diff --git a/sysdeps/unix/sysv/linux/recvmmsg.c b/sysdeps/unix/sysv/linux/recvmmsg.c
-index e3561f2f60..8c14128869 100644
+index 16136f5739..4f744134d8 100644
 --- a/sysdeps/unix/sysv/linux/recvmmsg.c
 +++ b/sysdeps/unix/sysv/linux/recvmmsg.c
 @@ -26,8 +26,8 @@ recvmmsg_syscall (int fd, struct mmsghdr *vmessages, unsigned int vlen,
@@ -201,7 +224,7 @@ index e3561f2f60..8c14128869 100644
    if (r >= 0 || errno != ENOSYS)
      return r;
 diff --git a/sysdeps/unix/sysv/linux/sched_rr_gi.c b/sysdeps/unix/sysv/linux/sched_rr_gi.c
-index 0f725cafc8..4a7b5eb0d6 100644
+index 2dde512409..a0e12659f0 100644
 --- a/sysdeps/unix/sysv/linux/sched_rr_gi.c
 +++ b/sysdeps/unix/sysv/linux/sched_rr_gi.c
 @@ -28,7 +28,8 @@ __sched_rr_get_interval64 (pid_t pid, struct __timespec64 *tp)
@@ -215,7 +238,7 @@ index 0f725cafc8..4a7b5eb0d6 100644
    if (ret == 0 || errno != ENOSYS)
      return ret;
 diff --git a/sysdeps/unix/sysv/linux/select.c b/sysdeps/unix/sysv/linux/select.c
-index 556165c11c..976ca7d0fd 100644
+index a75245ca49..0e5afb054c 100644
 --- a/sysdeps/unix/sysv/linux/select.c
 +++ b/sysdeps/unix/sysv/linux/select.c
 @@ -75,8 +75,8 @@ __select64 (int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds,
@@ -230,7 +253,7 @@ index 556165c11c..976ca7d0fd 100644
  	{
  	  TIMESPEC_TO_TIMEVAL (timeout, &ts64);
 diff --git a/sysdeps/unix/sysv/linux/semtimedop.c b/sysdeps/unix/sysv/linux/semtimedop.c
-index 4cff1f982a..9fa0300add 100644
+index 181289fa6a..666439d0a7 100644
 --- a/sysdeps/unix/sysv/linux/semtimedop.c
 +++ b/sysdeps/unix/sysv/linux/semtimedop.c
 @@ -45,7 +45,8 @@ __semtimedop64 (int semid, struct sembuf *sops, size_t nsops,
@@ -244,7 +267,7 @@ index 4cff1f982a..9fa0300add 100644
  	return r;
        __set_errno (EOVERFLOW);
 diff --git a/sysdeps/unix/sysv/linux/timer_gettime.c b/sysdeps/unix/sysv/linux/timer_gettime.c
-index 091a03ef36..b965c94457 100644
+index cc7ddd315f..3657efa40a 100644
 --- a/sysdeps/unix/sysv/linux/timer_gettime.c
 +++ b/sysdeps/unix/sysv/linux/timer_gettime.c
 @@ -32,7 +32,8 @@ ___timer_gettime64 (timer_t timerid, struct __itimerspec64 *value)
@@ -258,7 +281,7 @@ index 091a03ef36..b965c94457 100644
    if (ret == 0 || errno != ENOSYS)
      return ret;
 diff --git a/sysdeps/unix/sysv/linux/timer_settime.c b/sysdeps/unix/sysv/linux/timer_settime.c
-index 148eb4c0f2..ecb9bf99e9 100644
+index 8986462d8e..b5edfb8638 100644
 --- a/sysdeps/unix/sysv/linux/timer_settime.c
 +++ b/sysdeps/unix/sysv/linux/timer_settime.c
 @@ -39,8 +39,7 @@ ___timer_settime64 (timer_t timerid, int flags,
@@ -272,7 +295,7 @@ index 148eb4c0f2..ecb9bf99e9 100644
      return ret;
  #  endif
 diff --git a/sysdeps/unix/sysv/linux/timerfd_gettime.c b/sysdeps/unix/sysv/linux/timerfd_gettime.c
-index 2c8db1003d..9c3683bea9 100644
+index 9991a93807..1f6ba6ec34 100644
 --- a/sysdeps/unix/sysv/linux/timerfd_gettime.c
 +++ b/sysdeps/unix/sysv/linux/timerfd_gettime.c
 @@ -32,7 +32,8 @@ __timerfd_gettime64 (int fd, struct __itimerspec64 *value)
@@ -286,7 +309,7 @@ index 2c8db1003d..9c3683bea9 100644
      return ret;
    struct itimerspec its32;
 diff --git a/sysdeps/unix/sysv/linux/timerfd_settime.c b/sysdeps/unix/sysv/linux/timerfd_settime.c
-index 4f6148ea30..ab7eb0b568 100644
+index 86c49d4238..a7bb205145 100644
 --- a/sysdeps/unix/sysv/linux/timerfd_settime.c
 +++ b/sysdeps/unix/sysv/linux/timerfd_settime.c
 @@ -37,8 +37,8 @@ __timerfd_settime64 (int fd, int flags, const struct __itimerspec64 *value,
@@ -301,7 +324,7 @@ index 4f6148ea30..ab7eb0b568 100644
  	return r;
        __set_errno (EOVERFLOW);
 diff --git a/sysdeps/unix/sysv/linux/utimensat.c b/sysdeps/unix/sysv/linux/utimensat.c
-index 6075e1e006..8b931cdc35 100644
+index 991897f50d..362fdac9d0 100644
 --- a/sysdeps/unix/sysv/linux/utimensat.c
 +++ b/sysdeps/unix/sysv/linux/utimensat.c
 @@ -46,8 +46,8 @@ __utimensat64_helper (int fd, const char *file,

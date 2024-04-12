@@ -1,20 +1,21 @@
 # Maintainer: Heptazhou <zhou at 0h7z dot com>
-# Contributor: Allan McRae <allan@archlinux.org>
+
+# Maintainer: Giancarlo Razzolini <grazzolini@archlinux.org>
+# Maintainer: Frederik Schwan <freswa at archlinux dot org>
 # Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
-# Contributor: Giancarlo Razzolini <grazzolini@archlinux.org>
-# Contributor: Frederik Schwan <freswa at archlinux dot org>
+# Contributor: Allan McRae <allan@archlinux.org>
 
 # toolchain build order: linux-api-headers->glibc->binutils->gcc->glibc->binutils->gcc
 # NOTE: valgrind requires rebuilt with each major glibc version
 
 pkgbase=glibc-linux4
-pkgname=(glibc-linux4 lib32-glibc-linux4)
-pkgver_=1aed90c9c8f8be9f68b58e96b6e4cd0fc08eb2b1
-pkgver=2.38
+pkgname=($pkgbase lib32-$pkgbase)
+pkgver_=6d1e3fb07b45e2e31e469b16cf21b24bccf8914c
+pkgver=2.39
 pkgrel=1
 arch=(x86_64)
 url="https://www.gnu.org/software/libc/"
-license=(GPL LGPL)
+license=(GPL-2.0-or-later LGPL-2.1-or-later)
 makedepends=(git gd lib32-gcc-libs python)
 options=(staticlibs !lto)
 validpgpkeys=(
@@ -22,9 +23,9 @@ validpgpkeys=(
 	BC7C7372637EC10C57D7AA6579C43DFBF1CF2187 # Siddhesh Poyarekar
 )
 source=(
-	git+https://sourceware.org/git/glibc.git#commit=$pkgver_
-	# https://ftp.gnu.org/gnu/glibc/glibc-$pkgver.tar.xz{,.sig}
-	glibc-linux4.patch
+	# git+https://sourceware.org/git/glibc.git#commit=$pkgver_
+	https://ftp.gnu.org/gnu/glibc/glibc-$pkgver.tar.xz{,.sig}
+	$pkgbase.patch
 	locale.gen.txt
 	locale-gen
 	lib32-glibc.conf
@@ -32,15 +33,17 @@ source=(
 	sdt-config.h
 )
 sha256sums=(
-	"SKIP"
-	# "fb82998998b2b29965467bc1b69d152e9c307d2cf301c9eafb4555b770ef3fd2" "SKIP"
-	"e105e7788b068f364178eaaa6cd2e150047fec7a79138fda32a5410cbdf1c1b4"
+	# "SKIP"
+	"f77bd47cf8170c57365ae7bf86696c118adb3b120d3259c64c502d3dc1e2d926" "SKIP"
+	"41ee9b05d2bfa478622b72ca5be553061072e0e52197a8550fae0dd7ee56405c"
 	"2a7dd6c906b6c54a68f48a21898664a32fdb136cbd9ff7bfd48f01d1aaa649ae"
-	"7503947e23cecc8307e8f7ce2a792eecb6f72f22d6838b34417c2489a259fde9"
+	"8c5cc09018cbd65e8570430f872e118caa2644e311d6200b7d5f0cba837fbba4"
 	"c27424154a6096ae32c0824b785e05de6acef33d9224fd6147d1936be9b4962b"
 	"774061aff612a377714a509918a9e0e0aafce708b87d2d7e06b1bd1f6542fe70"
 	"cdc234959c6fdb43f000d3bb7d1080b0103f4080f5e67bcfe8ae1aaf477812f0"
 )
+# https://gitlab.archlinux.org/archlinux/packaging/packages/glibc/-/commits/2.39-4
+# _commit=31da30f23cddd36db29d5b6a1c7619361b271fb4
 
 prepare() {
 	mkdir -p glibc-build lib32-glibc-build
@@ -49,69 +52,73 @@ prepare() {
 	cd glibc
 
 	# compatibility with linux 4.x hosts
-	# patch -Np1 < "$srcdir"/glibc-linux4.patch
+	# patch -Np1 < "$srcdir/$pkgbase.patch"
 }
 
 build() {
 	local _configure_flags=(
 		--prefix=/usr
 		--with-headers=/usr/include
-		--with-bugurl=https://bugs.archlinux.org/
+		--with-bugurl=https://gitlab.archlinux.org/archlinux/packaging/packages/glibc/-/issues
 		--enable-bind-now
-		--enable-cet
 		--enable-fortify-source
 		--enable-kernel=4.4.0
 		--enable-multi-arch
 		--enable-stack-protector=strong
 		--enable-systemtap
+		--disable-nscd
 		--disable-profile
 		--disable-werror
 	)
 
-	cd "${srcdir}"/glibc-build
+	(
+		cd glibc-build
 
-	echo "slibdir=/usr/lib" >> configparms
-	echo "rtlddir=/usr/lib" >> configparms
-	echo "sbindir=/usr/bin" >> configparms
-	echo "rootsbindir=/usr/bin" >> configparms
+		echo "slibdir=/usr/lib" >> configparms
+		echo "rtlddir=/usr/lib" >> configparms
+		echo "sbindir=/usr/bin" >> configparms
+		echo "rootsbindir=/usr/bin" >> configparms
 
-	# Credits @allanmcrae
-	# https://github.com/allanmcrae/toolchain/blob/f18604d70c5933c31b51a320978711e4e6791cf1/glibc/PKGBUILD
-	# remove fortify for building libraries
-	# CFLAGS=${CFLAGS/-Wp,-D_FORTIFY_SOURCE=2/}
+		# Credits @allanmcrae
+		# https://github.com/allanmcrae/toolchain/blob/f18604d70c5933c31b51a320978711e4e6791cf1/glibc/PKGBUILD
+		# remove fortify for building libraries
+		CFLAGS=${CFLAGS/-Wp,-D_FORTIFY_SOURCE=3/}
 
-	"${srcdir}"/glibc/configure \
-		--libdir=/usr/lib \
-		--libexecdir=/usr/lib \
-		"${_configure_flags[@]}"
+		"${srcdir}"/glibc/configure \
+			--libdir=/usr/lib \
+			--libexecdir=/usr/lib \
+			--enable-cet \
+			"${_configure_flags[@]}"
 
-	make -O
+		make -O
 
-	# build info pages manually for reproducibility
-	make info
+		# build info pages manually for reproducibility
+		make info
+	)
 
-	cd "${srcdir}"/lib32-glibc-build
-	export CC="gcc -m32 -mstackrealign"
-	export CXX="g++ -m32 -mstackrealign"
+	(
+		cd lib32-glibc-build
+		export CC="gcc -m32 -mstackrealign"
+		export CXX="g++ -m32 -mstackrealign"
 
-	echo "slibdir=/usr/lib32" >> configparms
-	echo "rtlddir=/usr/lib32" >> configparms
-	echo "sbindir=/usr/bin" >> configparms
-	echo "rootsbindir=/usr/bin" >> configparms
+		echo "slibdir=/usr/lib32" >> configparms
+		echo "rtlddir=/usr/lib32" >> configparms
+		echo "sbindir=/usr/bin" >> configparms
+		echo "rootsbindir=/usr/bin" >> configparms
 
-	"${srcdir}"/glibc/configure \
-		--host=i686-pc-linux-gnu \
-		--libdir=/usr/lib32 \
-		--libexecdir=/usr/lib32 \
-		"${_configure_flags[@]}"
+		"${srcdir}"/glibc/configure \
+			--host=i686-pc-linux-gnu \
+			--libdir=/usr/lib32 \
+			--libexecdir=/usr/lib32 \
+			"${_configure_flags[@]}"
 
-	make -O
+		make -O
+	)
 
-	cd "${srcdir}"/glibc-build
-
-	# pregenerate C.UTF-8 locale until it is built into glibc
-	# (https://sourceware.org/glibc/wiki/Proposals/C.UTF-8, FS#74864)
-	elf/ld.so --library-path "$PWD" locale/localedef -c -f ../glibc/localedata/charmaps/UTF-8 -i ../glibc/localedata/locales/C ../C.UTF-8/
+	# pregenerate locales here instead of in package
+	# functions because localedef does not like fakeroot
+	make -C "${srcdir}"/glibc/localedata objdir="${srcdir}"/glibc-build \
+		DESTDIR="${srcdir}"/locales install-locale-files
 }
 
 check() {
@@ -122,7 +129,6 @@ check() {
 	sed -i 's/-Werror=format-security/-Wformat-security/' config.make # failure to build testsuite
 	sed -i '/CFLAGS/s/-fno-plt//' config.make # 16 failures
 	sed -i '/CFLAGS/s/-fexceptions//' config.make # 1 failure
-	LDFLAGS=${LDFLAGS/,-z,now/} # 10 failures
 
 	# some failures are "expected"
 	# make -O check || \ #
@@ -139,10 +145,9 @@ package_glibc-linux4() {
 	backup=(
 		etc/gai.conf
 		etc/locale.gen
-		etc/nscd.conf
 	)
 
-	make -C glibc-build install_root="${pkgdir}" install
+	make -C glibc-build DESTDIR="${pkgdir}" install
 	rm -f "${pkgdir}"/etc/ld.so.cache
 
 	# Shipped in tzdata
@@ -150,11 +155,7 @@ package_glibc-linux4() {
 
 	cd glibc
 
-	install -dm755 "${pkgdir}"/usr/lib/{locale,systemd/system,tmpfiles.d}
-	install -m644 nscd/nscd.conf "${pkgdir}"/etc/nscd.conf
-	install -m644 nscd/nscd.service "${pkgdir}"/usr/lib/systemd/system
-	install -m644 nscd/nscd.tmpfiles "${pkgdir}"/usr/lib/tmpfiles.d/nscd.conf
-	install -dm755 "${pkgdir}"/var/db/nscd
+	install -dm755 "${pkgdir}"/usr/lib/locale
 
 	install -m644 posix/gai.conf "${pkgdir}"/etc/gai.conf
 
@@ -163,15 +164,18 @@ package_glibc-linux4() {
 	# Create /etc/locale.gen
 	install -m644 "${srcdir}"/locale.gen.txt "${pkgdir}"/etc/locale.gen
 	sed -e '1,3d' -e 's|/| |g' -e 's|\\| |g' -e 's|^|#|g' \
-		"${srcdir}"/glibc/localedata/SUPPORTED >> "${pkgdir}"/etc/locale.gen
+		localedata/SUPPORTED >> "${pkgdir}"/etc/locale.gen
 
 	# Add SUPPORTED file to pkg
 	sed -e '1,3d' -e 's|/| |g' -e 's| \\||g' \
-		"${srcdir}"/glibc/localedata/SUPPORTED > "${pkgdir}"/usr/share/i18n/SUPPORTED
+		localedata/SUPPORTED > "${pkgdir}"/usr/share/i18n/SUPPORTED
 
 	# install C.UTF-8 so that it is always available
+	# should be built into glibc eventually
+	# https://sourceware.org/glibc/wiki/Proposals/C.UTF-8
+	# https://bugs.archlinux.org/task/74864
 	install -dm755 "${pkgdir}"/usr/lib/locale
-	cp -r "${srcdir}"/C.UTF-8 -t "${pkgdir}"/usr/lib/locale
+	cp -r "${srcdir}"/locales/usr/lib/locale/C.utf8 -t "${pkgdir}"/usr/lib/locale
 	sed -i '/#C\.UTF-8 /d' "${pkgdir}"/etc/locale.gen
 
 	# Provide tracing probes to libstdc++ for exceptions, possibly for other
@@ -189,7 +193,7 @@ package_lib32-glibc-linux4() {
 
 	cd lib32-glibc-build
 
-	make install_root="${pkgdir}" install
+	make DESTDIR="${pkgdir}" install
 	rm -rf "${pkgdir}"/{etc,sbin,usr/{bin,sbin,share},var}
 
 	# We need to keep 32 bit specific header files
