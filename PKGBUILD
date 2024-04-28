@@ -1,9 +1,10 @@
+# Maintainer: soh @ AUR
 # Maintainer: Tobias Kunze <r@rixx.de>
 # Maintained at https://github.com/rixx/pkgbuilds, feel free to submit patches
 
 pkgname=python311
 pkgver=3.11.9
-pkgrel=1
+pkgrel=2
 _pybasever=3.11
 _pymajver=3
 pkgdesc="Major release 3.11 of the Python high-level programming language"
@@ -39,7 +40,9 @@ build() {
   cd "${srcdir}/Python-${pkgver}"
 
   CFLAGS="${CFLAGS} -fno-semantic-interposition"
-  ./configure --prefix=/usr \
+  ./configure \
+	       ax_cv_c_float_words_bigendian=no \
+              --prefix=/usr \
               --enable-shared \
               --with-computed-gotos \
               --with-lto \
