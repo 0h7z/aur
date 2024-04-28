@@ -7,7 +7,7 @@
 
 pkgname=python310
 pkgver=3.10.14
-pkgrel=1
+pkgrel=2
 _pymajver=3
 _pybasever=${pkgver%.*}
 pkgdesc="Next generation of the python high-level scripting language, version 3.10"
@@ -47,7 +47,9 @@ build() {
   CFLAGS="${CFLAGS/-O2/-O3} -ffat-lto-objects"
 
   # Disable bundled pip & setuptools
-  ./configure --prefix=/usr \
+  ./configure \
+              ax_cv_c_float_words_bigendian=no \
+              --prefix=/usr \
               --enable-shared \
               --with-computed-gotos \
               --enable-optimizations \
