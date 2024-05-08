@@ -8,31 +8,31 @@ license=('LGPL-2.1-or-later' 'BSD-3-Clause' 'LicenseRef-UnRAR')
 arch=('x86_64' 'i686' 'aarch64' 'armv7h')
 provides=("${_name}" 'p7zip' '7z.so')
 conflicts=("${_name}" 'p7zip')
-makedepends=('uasm')
+makedepends=('git' 'uasm')
 
-_sver="${pkgver//./}"
+_repo='7zip'
+_url="https://github.com/ip7z/${_repo}"
+_manarc="7z${pkgver//./}-linux-x64.tar.xz"
+
 source=(
-    "${url}a/7z${_sver}-src.tar.xz"
-    "${url}a/7z${_sver}-linux-x64.tar.xz" # To get the manual
+    "git+${_url}.git#tag=${pkgver}"
+    "${_url}/releases/download/${pkgver}/${_manarc}" # to get the manual
     '01-make.patch'
     '02-lib-load-path.patch'
 )
 
 sha256sums=(
-    '356071007360e5a1824d9904993e8b2480b51b570e8c9faf7c0f58ebe4bf9f74'
+    '438b2500d17cbb84f532666d17a3d48775653f914ffa1365ec18a28f4eec1745'
     '23babcab045b78016e443f862363e4ab63c77d75bc715c0b3463f6134cbcf318'
-    '3c6b0ee8ecae06a4f0ff91205989e93e22d03a33e5b7cc6982396c32041fc0a8'
-    '5b49bd8c22f2fcc4e6011adc36c2d7a3fb195ba86596b366974f7b6311d0df00'
+    '59dee0da982a8da84af8f7b7a08868d4e8ccffd02be82b97834dd4024ddbd38b'
+    'ac846e73d248cc51e3005d62d68f77a97c13d6baaae5c159e9fd35919921558d'
 )
 
-_msrc="${source[1]##*/}"
-noextract=("${_msrc}")
+noextract=("${_manarc}")
 
 prepare() {
-    chmod -R a=rw,a+X .
-
     for p in *.patch; do
-        patch -p1 --binary -Z -i "${p}"
+        patch -p1 -d "${_repo}" < "${p}"
     done
 }
 
@@ -48,10 +48,9 @@ _build() {
 
     set -a
     PLATFORM="${platforms["${CARCH}"]}"
-    IS_X64=$([ "${CARCH}" = 'x86_64' ] && echo '1' || echo '')
-    IS_X86=$([ "${CARCH}" = 'i686' ] && echo '1' || echo '')
-    IS_ARM64=$([ "${CARCH}" = 'aarch64' ] && echo '1' || echo '')
-    MY_ARCH=
+    [ "${CARCH}" = 'x86_64' ] && IS_X64=1
+    [ "${CARCH}" = 'i686' ] && IS_X86=1
+    [ "${CARCH}" = 'aarch64' ] && IS_ARM64=1
     USE_ASM=1
     CFLAGS_WARN='-Wno-error'
     CFLAGS_ADD="${CFLAGS}"
@@ -59,6 +58,7 @@ _build() {
     CXXFLAGS_ADD="${CXXFLAGS}"
     set +a
 
+    cd "${_repo}"
     local targets=('CPP/7zip/'{'UI/Console','Bundles/'{'Alone','Alone7z','Format7zF'}})
     for target in "${targets[@]}"; do
         (_make "${target}")
@@ -70,6 +70,8 @@ build() {
 }
 
 package() {
+    cd "${_repo}"
+
     install -Dm755 -t "${pkgdir}/usr/bin" \
         'CPP/7zip/'{'UI/Console/_o/7z','Bundles/'{'Alone/_o/7za','Alone7z/_o/7zr'}}
 
@@ -83,5 +85,5 @@ package() {
     install -Dm644 -t "${doc}" \
         'DOC/'{'7zC.txt','7zFormat.txt','lzma.txt','Methods.txt','readme.txt','src-history.txt'}
 
-    bsdtar -C "${doc}" -xf "${_msrc}" 'MANUAL'
+    bsdtar -C "${doc}" -xf "${srcdir}/${_manarc}" 'MANUAL'
 }
