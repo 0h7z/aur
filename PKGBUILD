@@ -2,9 +2,9 @@ _name=7-zip
 pkgname=${_name}-full
 pkgver=23.01
 pkgrel=4
-pkgdesc="File archiver with a high compression ratio (full package to replace p7zip)"
-url="https://7-zip.org/"
-license=('LGPL')
+pkgdesc='File archiver with a high compression ratio (full package to replace p7zip)'
+url='https://7-zip.org/'
+license=('LGPL-2.1-or-later' 'BSD-3-Clause' 'LicenseRef-UnRAR')
 arch=('x86_64' 'i686' 'aarch64' 'armv7h')
 provides=("${_name}" 'p7zip')
 conflicts=("${provides[@]}")
@@ -77,7 +77,7 @@ package() {
         'CPP/7zip/Bundles/Format7zF/_o/7z.so'
 
     install -Dm644 -t "${pkgdir}/usr/share/licenses/${pkgname}" \
-        'DOC/'{'copying.txt','License.txt','unRarLicense.txt'}
+        'DOC/unRarLicense.txt'
 
     local doc="${pkgdir}/usr/share/doc/${pkgname}"
     install -Dm644 -t "${doc}" \
