@@ -6,8 +6,8 @@ pkgdesc='File archiver with a high compression ratio (full package to replace p7
 url='https://7-zip.org/'
 license=('LGPL-2.1-or-later' 'BSD-3-Clause' 'LicenseRef-UnRAR')
 arch=('x86_64' 'i686' 'aarch64' 'armv7h')
-provides=("${_name}" 'p7zip')
-conflicts=("${provides[@]}")
+provides=("${_name}" 'p7zip' '7z.so')
+conflicts=("${_name}" 'p7zip')
 makedepends=('uasm')
 
 _sver="${pkgver//./}"
