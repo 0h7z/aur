@@ -1,7 +1,7 @@
 _name=7-zip
 pkgname=${_name}-full
 pkgver=23.01
-pkgrel=4
+pkgrel=5
 pkgdesc='File archiver with a high compression ratio (full package to replace p7zip)'
 url='https://7-zip.org/'
 license=('LGPL-2.1-or-later' 'BSD-3-Clause' 'LicenseRef-UnRAR')
