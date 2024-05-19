@@ -7,9 +7,9 @@
 # https://github.com/wine-staging/wine-staging
 
 pkgname="wine-wow64"
-pkgver=9.8
+pkgver=9.9
 _pkgver="${pkgver/rc/-rc}"
-pkgrel=5
+pkgrel=1
 pkgdesc="A compatibility layer for running Windows programs"
 url="https://www.winehq.org"
 license=(LGPL)
@@ -76,7 +76,7 @@ source=(
   "30-win32-aliases.conf"
   "wine-binfmt.conf"
 )
-b2sums=('689d1b4e55f7d66b8fad8432ad35a52e2fad303e8a9382b8893222c696697efa5de5b56cc2b933bed96d6382f9fdc919fa15e6517ffdb50105cdaea904a7d77f'
+b2sums=('a2557044b10252c1b1ae023e10863c601e9159d64eda2ce1d8aab4dbb9efffa1b4b15ed27a9edbf6f2bba148c2bb07e729bd706bac9fe17f91c826c74b5980e6'
         '45db34fb35a679dc191b4119603eba37b8008326bd4f7d6bd422fbbb2a74b675bdbc9f0cc6995ed0c564cf088b7ecd9fbe2d06d42ff8a4464828f3c4f188075b'
         'e9de76a32493c601ab32bde28a2c8f8aded12978057159dd9bf35eefbf82f2389a4d5e30170218956101331cf3e7452ae82ad0db6aad623651b0cc2174a61588')
 
