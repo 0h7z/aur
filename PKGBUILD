@@ -82,9 +82,9 @@ b2sums=('a2557044b10252c1b1ae023e10863c601e9159d64eda2ce1d8aab4dbb9efffa1b4b15ed
 
 build() {
   # Apply flags for cross-compilation
-  export CROSSCFLAGS="${CFLAGS/-Werror=format-security/}"
-  export CROSSCXXFLAGS="${CXXFLAGS/-Werror=format-security/}"
-  export CROSSLDFLAGS="${LDFLAGS//-Wl,-z*([^[:space:]])/}"
+  export CROSSCFLAGS="-O2 -pipe"
+  export CROSSCXXFLAGS="-O2 -pipe"
+  export CROSSLDFLAGS="-Wl,-O1"
 
   mkdir -p build
   cd build
