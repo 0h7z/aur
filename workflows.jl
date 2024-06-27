@@ -89,10 +89,11 @@ const ACT_PUSH(msg::StrOrSym; m = cquote(msg)) = ACT_RUN("""
 	grep $(cquote(PUSH_NOP)) /tmp/push -ax && exit
 	echo @Heptazhou > /tmp/md
 	echo '```s'    >> /tmp/md && git show --stat -w >> /tmp/md
-	echo '```'     >> /tmp/md
+	echo '```'     >> /tmp/md && cat /tmp/md | jq -Rs \
+	\$'{ body: . }' > /tmp/md.json
 	echo \$u && curl -LX POST \
-	 -H 'Authorization: token \${{ secrets.PAT }}' \\
-	 -d `cat /tmp/md | jq -Rs '{ body: . }'` \
+	 -H 'Authorization: token \${{ secrets.PAT }}' \
+	 -d @/tmp/md.json \
 	\$u""" # https://docs.github.com/rest/commits/comments
 )
 const ACT_RUN(cmd::StrOrSym, envs::Pair...) = ODict(

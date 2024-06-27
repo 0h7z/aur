@@ -88,6 +88,5 @@ jobs:
           grep $'Everything up-to-date' /tmp/push -ax && exit
           echo @Heptazhou > /tmp/md
           echo '```s'    >> /tmp/md && git show --stat -w >> /tmp/md
-          echo '```'     >> /tmp/md
-          echo $u && curl -LX POST -H 'Authorization: token ${{ secrets.PAT }}' \
-           -d `cat /tmp/md | jq -Rs '{ body: . }'` $u
+          echo '```'     >> /tmp/md && cat /tmp/md | jq -Rs $'{ body: . }' > /tmp/md.json
+          echo $u && curl -LX POST -H 'Authorization: token ${{ secrets.PAT }}' -d @/tmp/md.json $u
