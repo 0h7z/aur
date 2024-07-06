@@ -1,0 +1,12 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = systemd
+Target = systemd-altctl
+
+[Action]
+Exec = /bin/sh -c 'cd /bin && for x in systemctl; do if [[ -f $x && ! -L $x ]]; then mv -f $x $x.org && ln -s $x.py $x; fi; done && sed -r \'s/\b((sysuser|tmpfile)s\))$/\1  systemd_live/g\' -i /usr/share/libalpm/scripts/systemd-hook'
+When = PostTransaction
+Depends = systemd
+

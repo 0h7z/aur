@@ -9,7 +9,7 @@ pkgrel=3
 pkgdesc="Multiple locales following UTC, UTF-8, and ISO 8601"
 arch=("any")
 # url
-license=("AGPL3")
+license=("AGPL-3.0")
 depends=("glibc")
 install="$pkgname_.install"
 source=("$pkgname-v$pkgver_.tar.gz::$url/archive/v$pkgver_.tar.gz")

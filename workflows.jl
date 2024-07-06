@@ -15,6 +15,7 @@
 
 using OrderedCollections: LittleDict as LDict
 using OrderedCollections: OrderedDict as ODict
+using TOML: TOML
 using YAML: YAML, yaml
 
 const COMPRESS = "zstdmt -17 -M1024M --long"

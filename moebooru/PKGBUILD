@@ -6,7 +6,7 @@ pkgrel=1
 pkgdesc="An image board"
 arch=("any")
 url="https://github.com/0h7z/moebooru"
-license=("AGPL")
+license=("AGPL-3.0")
 depends=(
 	"git"
 	"imagemagick"

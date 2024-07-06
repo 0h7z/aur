@@ -1,0 +1,12 @@
+[Trigger]
+Operation = Remove
+
+Type = Package
+
+Target = systemd-altctl
+
+[Action]
+Exec = /bin/sh -c 'cd /bin && for x in systemctl; do if [[ -f $x.org        ]]; then mv -f $x.org $x                  ; fi; done && sed -r \'s/\b((sysuser|tmpfile)s\))  systemd_live$/\1/g\' -i /usr/share/libalpm/scripts/systemd-hook'
+When = PreTransaction
+Depends = systemd
+AbortOnFail

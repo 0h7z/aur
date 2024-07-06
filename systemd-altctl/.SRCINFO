@@ -1,0 +1,20 @@
+pkgbase = systemd-altctl
+	pkgdesc = systemctl replacement for system without systemd
+	pkgver = 1.5.8066
+	pkgrel = 1
+	url = https://github.com/gdraheim/docker-systemctl-replacement
+	arch = any
+	license = EUPL-1.2
+	depends = python
+	depends = systemd
+	options = !debug
+	source = journalctl.py::https://github.com/gdraheim/docker-systemctl-replacement/raw/v1.5.8066/files/docker/journalctl3.py
+	source = systemctl.py::https://github.com/gdraheim/docker-systemctl-replacement/raw/v1.5.8066/files/docker/systemctl3.py
+	source = 00-systemd-altctl-update.hook
+	source = 00-systemd-altctl-remove.hook
+	sha256sums = ac580249165ceffa1b8f4cbf89fadcf6cd3374c1f4898e8166b152017113033d
+	sha256sums = f8736b56299374a316a958e5e949be73e657e2f7069691381664d94950c645c9
+	sha256sums = 13a30c36aebb3d4e983f3ade305cb2543471dcb3105c73dccb0f8751ebacf7cf
+	sha256sums = 04445ca4a56cbb1fb2e379e3e4663d31963b508dbfd07c0d56894171e10cedfd
+
+pkgname = systemd-altctl
