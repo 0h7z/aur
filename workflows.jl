@@ -64,7 +64,7 @@ const ACT_INIT(cmd::StrOrSym, envs::Pair...) = ACT_RUN("""
 	sed -r 's/^#(MAKEFLAGS)=.*/\\1="-j`nproc`"/' -i makepkg.conf
 	sed -r 's/^#(PACKAGER)=.*/\\1="$PACKAGER"/' -i makepkg.conf
 	pacman-key --init""", """
-	pacman -Syu --noconfirm dbus-daemon-units git pacman-contrib
+	pacman -Syu --noconfirm git pacman-contrib
 	sed -r 's/\\b(EUID)\\s*==\\s*0\\b/\\1 < -0/' -i /bin/makepkg
 	makepkg --version""", cmd, envs...,
 )
