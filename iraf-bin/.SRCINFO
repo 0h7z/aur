@@ -1,17 +1,17 @@
 pkgbase = iraf-bin
 	pkgdesc = IRAF - Image Reduction and Analysis Facility
 	pkgver = 2.18.1~rc1
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/iraf-community/iraf
 	arch = x86_64
 	license = custom
-	noextract = iraf_2.18.1~rc1-1_amd64.deb
-	noextract = iraf-noao_2.18.1~rc1-1_amd64.deb
+	noextract = iraf_2.18.1~rc1-2_amd64.deb
+	noextract = iraf-noao_2.18.1~rc1-2_amd64.deb
 	options = !debug
-	source = https://deb.debian.org/debian/pool/main/i/iraf/iraf_2.18.1~rc1-1_amd64.deb
-	source = https://deb.debian.org/debian/pool/main/i/iraf/iraf-noao_2.18.1~rc1-1_amd64.deb
-	sha256sums = 3a28c82c5a6464e61992edc3315514ecfc8a476fca1740f614a664d80393f09a
-	sha256sums = eabf11092e3879c6d1640226617b83777e065724d3bf0e857cc153f842b6b530
+	source = https://deb.debian.org/debian/pool/main/i/iraf/iraf_2.18.1~rc1-2_amd64.deb
+	source = https://deb.debian.org/debian/pool/main/i/iraf/iraf-noao_2.18.1~rc1-2_amd64.deb
+	sha256sums = 21a47659a70022747858c36696adf80eb7096297d76dc3e72ba7d0b4cdfed55e
+	sha256sums = 7f4270ff159bb76525d3f126acf473ade69027df05ce88f791693718d8a5bc02
 
 pkgname = iraf-bin
 	depends = glibc
