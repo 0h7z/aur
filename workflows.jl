@@ -2,8 +2,7 @@
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+# published by the Free Software Foundation, version 3.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -249,14 +248,14 @@ end
 # https://aur.archlinux.org/packages
 const pkg = ODict(
 	# [depends..., pkgbase]    => (sync, make, pkgver_pkgrel),
-	["7-zip-full"]             => (1, 1, "23.01-4"),
+	["7-zip-full"]             => (1, 1, "24.08-1"),
 	["apt-zsh-completion"]     => (1, 0, "5.9-1"),
 	["conda-zsh-completion"]   => (1, 0, "0.11-1"),
 	["glibc-linux4"]           => (1, 0, "2.38-1"),
 	["iraf-bin"]               => (1, 1, "2.18-1"),
 	["libcurl-julia-bin"]      => (1, 1, "1.10-1"),
 	["locale-mul_zz"]          => (1, 0, "2.0-3"),
-	["mingw-w64-zlib", "nsis"] => (1, 1, "3.09-1"),
+	["mingw-w64-zlib", "nsis"] => (1, 1, "3.10-1"),
 	["wine-wow64"]             => (1, 0, "9.6-1"),
 	["wine64"]                 => (0, 1, "9.6-1"),
 	["xgterm-bin"]             => (1, 0, "2.1-2"),
