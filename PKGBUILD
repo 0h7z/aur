@@ -2,7 +2,7 @@
 
 pkgname_=libcurl-julia
 pkgname=$pkgname_-bin
-pkgver=1.10
+pkgver=1.11
 pkgrel=1
 pkgdesc="command line tool and library for transferring data with URLs - Julia fork"
 arch=("x86_64")
