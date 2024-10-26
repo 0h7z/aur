@@ -12,6 +12,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Exts
 using OrderedCollections: LittleDict as LDict
 using OrderedCollections: OrderedDict as ODict
 using TOML: TOML
@@ -21,26 +22,25 @@ const COMPRESS = "zstdmt -17 -M1024M --long"
 const NAME, MAIL = "Seele", "seele@0h7z.com"
 const PACKAGER = "$NAME <$MAIL>"
 const PUSH_NOP = "Everything up-to-date"
-const StrOrSym = Union{AbstractString, Symbol}
 const URL_AUR = "https://aur.archlinux.org"
 const URL_DEB = "https://deb.debian.org/debian"
 const YAML.yaml(xs...) = join(map(yaml, xs), "\n")
 macro S_str(string)
 	:(Symbol($string))
 end
-const cquote(s::StrOrSym) = "\$'$(escape(s, "'"))'"
-const escape(s::StrOrSym, xs...; kw...) = escape_string(s, xs...; kw...)
+const cquote(s::SymOrStr) = "\$'$(escape(s, "'"))'"
+const escape(s::SymOrStr, xs...; kw...) = escape_string(s, xs...; kw...)
 const escape(sym::Symbol, xs...; kw...) = escape(string(sym), xs...; kw...)
 const mirror = [
 	raw"https://mirrors.dotsrc.org/archlinux/$repo/os/$arch"
 	raw"https://mirrors.kernel.org/archlinux/$repo/os/$arch"
 ]
 
-const ACT_ARTIFACT(pat::StrOrSym) = ODict(
+const ACT_ARTIFACT(pat::SymOrStr) = ODict(
 	S"uses" => S"actions/upload-artifact@v4",
 	S"with" => ODict(S"compression-level" => 0, S"path" => pat),
 )
-const ACT_CHECKOUT(ref::StrOrSym) = ACT_CHECKOUT(
+const ACT_CHECKOUT(ref::SymOrStr) = ACT_CHECKOUT(
 	S"path" => Symbol(ref),
 	S"ref"  => Symbol(ref),
 )
@@ -48,12 +48,12 @@ const ACT_CHECKOUT(xs::Pair...) = ODict(
 	S"uses" => S"actions/checkout@v4",
 	S"with" => ODict(S"persist-credentials" => false, xs...),
 )
-const ACT_GH(cmd::StrOrSym, envs::Pair...) = ACT_RUN(
+const ACT_GH(cmd::SymOrStr, envs::Pair...) = ACT_RUN(
 	cmd, envs...,
 	S"GH_REPO"  => S"${{ github.repository }}",
 	S"GH_TOKEN" => S"${{ secrets.PAT }}",
 )
-const ACT_INIT(cmd::StrOrSym, envs::Pair...) = ACT_RUN("""
+const ACT_INIT(cmd::SymOrStr, envs::Pair...) = ACT_RUN("""
 	uname -a
 	mkdir ~/.ssh -p && cd /etc/pacman.d
 	echo -e 'Server = $(mirror[1])' >> mirrorlist
@@ -70,7 +70,7 @@ const ACT_INIT(cmd::StrOrSym, envs::Pair...) = ACT_RUN("""
 const ACT_INIT(pkg::Vector{String}) = ACT_INIT(
 	Symbol(join(["pacman -S --noconfirm"; pkg], " ")),
 )
-const ACT_PUSH(msg::StrOrSym; m = cquote(msg)) = ACT_RUN("""
+const ACT_PUSH(msg::SymOrStr; m = cquote(msg)) = ACT_RUN("""
 	git version
 	git config --global commit.gpgsign true
 	git config --global gpg.format ssh
@@ -96,12 +96,12 @@ const ACT_PUSH(msg::StrOrSym; m = cquote(msg)) = ACT_RUN("""
 	 -d @/tmp/md.json \
 	\$u""" # https://docs.github.com/rest/commits/comments
 )
-const ACT_RUN(cmd::StrOrSym, envs::Pair...) = ODict(
+const ACT_RUN(cmd::SymOrStr, envs::Pair...) = ODict(
 	S"run" => cmd, S"env" => ODict(envs...),
 )
-const ACT_RUN(cmd::StrOrSym...) = ACT_RUN.([cmd...])
-const ACT_RUN(cmd::StrOrSym) = ODict(S"run" => cmd)
-const ACT_SYNC(pkgbase::StrOrSym) = ODict(
+const ACT_RUN(cmd::SymOrStr...) = ACT_RUN.([cmd...])
+const ACT_RUN(cmd::SymOrStr) = ODict(S"run" => cmd)
+const ACT_SYNC(pkgbase::SymOrStr) = ODict(
 	# https://github.com/Heptazhou/github-sync
 	S"uses" => S"heptazhou/github-sync@v2.3.0",
 	S"with" => ODict(
@@ -111,7 +111,7 @@ const ACT_SYNC(pkgbase::StrOrSym) = ODict(
 		S"github_token"       => S"${{ secrets.PAT }}",
 	),
 )
-const ACT_UPDT(dict::AbstractDict, rel::StrOrSym) = ACT_RUN.("""
+const ACT_UPDT(dict::AbstractDict, rel::SymOrStr) = ACT_RUN.("""
 	mkdir .github/packages/$pkg -p
 	cd -- .github/packages/$pkg
 	apt list -a $(join(src, " ")) 2> /dev/null || true
@@ -131,7 +131,7 @@ const ACT_UPDT(dict::AbstractDict, rel::StrOrSym) = ACT_RUN.("""
 	""" for (pkg, src) ∈ dict
 )
 
-const JOB_MAKE(pkgbases::Vector{String}, tag::StrOrSym) = ODict(
+const JOB_MAKE(pkgbases::Vector{String}, tag::SymOrStr) = ODict(
 	S"container" => S"archlinux:base-devel",
 	S"runs-on" => S"ubuntu-latest",
 	S"steps" => [
@@ -160,7 +160,7 @@ const JOB_SYNC(pkgbase::String) = ODict(
 	S"runs-on" => S"ubuntu-latest",
 	S"steps"   => [ACT_CHECKOUT(), ACT_SYNC(pkgbase)],
 )
-const JOB_UPDT(dict::AbstractDict, rel::StrOrSym) = ODict(
+const JOB_UPDT(dict::AbstractDict, rel::SymOrStr) = ODict(
 	S"container" => S"archlinux:base-devel",
 	S"runs-on" => S"ubuntu-latest",
 	S"steps" => [
@@ -225,7 +225,7 @@ function syncpkg(pkgbases::Vector{String})
 		),
 	)
 end
-function updtpkg(dict::AbstractDict, rel::StrOrSym)
+function updtpkg(dict::AbstractDict, rel::SymOrStr)
 	f = ".github/workflows/repo-updt.yml"
 	mkpath(dirname(f))
 	write(f,
@@ -252,14 +252,14 @@ const pkg = ODict(
 	["apt-zsh-completion"]     => (1, 0, "5.9-1"),
 	["conda-zsh-completion"]   => (1, 0, "0.11-1"),
 	["glibc-linux4"]           => (1, 0, "2.38-1"),
-	["iraf-bin"]               => (1, 1, "2.18-1"),
-	["libcurl-julia-bin"]      => (1, 1, "1.10-1"),
+	["iraf-bin"]               => (1, 0, "2.18.1-2"),
+	["libcurl-julia-bin"]      => (1, 1, "1.11-1"),
 	["locale-mul_zz"]          => (1, 0, "2.0-3"),
 	["mingw-w64-zlib", "nsis"] => (1, 1, "3.10-1"),
-	["wine-wow64"]             => (1, 0, "9.6-1"),
-	["wine64"]                 => (0, 1, "9.6-1"),
-	["xgterm-bin"]             => (1, 0, "2.1-2"),
-	["yay"]                    => (1, 1, "12.3.5-1"),
+	["wine-wow64"]             => (1, 0, "9.20-1"),
+	["wine64"]                 => (0, 1, "9.20-1"),
+	["xgterm-bin"]             => (1, 0, "2.2-1"),
+	["yay"]                    => (1, 0, "12.4.2-1"),
 )
 for (k, v) ∈ filter((k, v)::Pair -> Bool(v[2]), pkg)
 	makepkg(k, v[3])

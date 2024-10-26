@@ -1,6 +1,9 @@
 [deps]
+Exts = "0b12d779-4123-4875-9d6c-e33c2e29e2c9"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [compat]
-julia = "≥ 1.6"
+Exts = "≥ 0.1.8"
+julia = "≥ 1.9"
