@@ -1,6 +1,6 @@
 pkgbase = xgterm-bin
 	pkgdesc = Terminal emulator to work with IRAF
-	pkgver = 2.2~rc1
+	pkgver = 2.2
 	pkgrel = 3
 	url = https://github.com/iraf-community/x11iraf
 	arch = x86_64

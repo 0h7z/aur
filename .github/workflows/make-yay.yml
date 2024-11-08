@@ -46,6 +46,6 @@ jobs:
           gh release delete $GH_TAG --cleanup-tag -y || true
           gh release create $GH_TAG *.pkg.tar.zst --target `cat head` && cat head
         env:
-          GH_TAG: yay-v12.3.5-1
+          GH_TAG: yay-v12.4.2-1
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.PAT }}

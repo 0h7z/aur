@@ -13,10 +13,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Exts
-using OrderedCollections: LittleDict as LDict
-using OrderedCollections: OrderedDict as ODict
 using TOML: TOML
-using YAML: YAML, yaml
+using YAML: yaml
 
 const COMPRESS = "zstdmt -17 -M1024M --long"
 const NAME, MAIL = "Seele", "seele@0h7z.com"
@@ -24,10 +22,7 @@ const PACKAGER = "$NAME <$MAIL>"
 const PUSH_NOP = "Everything up-to-date"
 const URL_AUR = "https://aur.archlinux.org"
 const URL_DEB = "https://deb.debian.org/debian"
-const YAML.yaml(xs...) = join(map(yaml, xs), "\n")
-macro S_str(string)
-	:(Symbol($string))
-end
+
 const cquote(s::SymOrStr) = "\$'$(escape(s, "'"))'"
 const escape(s::SymOrStr, xs...; kw...) = escape_string(s, xs...; kw...)
 const escape(sym::Symbol, xs...; kw...) = escape(string(sym), xs...; kw...)
@@ -111,7 +106,7 @@ const ACT_SYNC(pkgbase::SymOrStr) = ODict(
 		S"github_token"       => S"${{ secrets.PAT }}",
 	),
 )
-const ACT_UPDT(dict::AbstractDict, rel::SymOrStr) = ACT_RUN.("""
+const ACT_UPDT(dict::AbstractDict, rel::SymOrStr) = ACT_RUN.(strip("""
 	mkdir .github/packages/$pkg -p
 	cd -- .github/packages/$pkg
 	apt list -a $(join(src, " ")) 2> /dev/null || true
@@ -120,15 +115,15 @@ const ACT_UPDT(dict::AbstractDict, rel::SymOrStr) = ACT_RUN.("""
 	cd - && cd $pkg
 	ver=\$(cat PKGBUILD | grep -Po '^pkgver=\\K\\S+')
 	rel=\$(cat PKGBUILD | grep -Po '^pkgrel=\\K\\S+')
-	[[ \${ver} != \${deb/[+-]*/} ]] && \
-	rel=1 && ver="\${deb/[+-]*/}" || \\
+	[[ \${ver} != \${deb/[~+-]*} ]] && \
+	rel=1 && ver="\${deb/[~+-]*}" || \\
 	[[ \${deb} == \$(cat PKGBUILD | grep \
 	-Po '^debver=\\K\\S+') ]] || ((rel++))
 	sed -re "s/^(debver)=.+/\\1=\$deb/" -i PKGBUILD
 	sed -re "s/^(pkgver)=.+/\\1=\$ver/" -i PKGBUILD
 	sed -re "s/^(pkgrel)=.+/\\1=\$rel/" -i PKGBUILD
-	updpkgsums && makepkg --printsrcinfo > .SRCINFO\
-	""" for (pkg, src) ∈ dict
+	updpkgsums && makepkg --printsrcinfo > .SRCINFO
+	""") for (pkg, src) ∈ dict
 )
 
 const JOB_MAKE(pkgbases::Vector{String}, tag::SymOrStr) = ODict(
@@ -171,12 +166,13 @@ const JOB_UPDT(dict::AbstractDict, rel::SymOrStr) = ODict(
 		)
 		ACT_RUN("""
 			patch -d / -lp1  < makepkg.patch
+			sed  's/Retries "0"/Retries "3"/' -i /etc/apt/apt.conf
 			echo 'deb $URL_DEB unstable main' >> /etc/apt/sources.list
 			echo 'deb $URL_DEB testing  main' >> /etc/apt/sources.list
 			echo 'deb $URL_DEB stable   main' >> /etc/apt/sources.list
 			echo '\${{ secrets.SSH_PUB }}'    > ~/.ssh/id_ecdsa.pub
 			echo '\${{ secrets.SSH_KEY }}'    > ~/.ssh/id_ecdsa
-			chmod 600 ~/.ssh/* && apt update  2> /dev/null"""
+			chmod 400 ~/.ssh/** && apt update 2> /dev/null"""
 		)
 		ACT_UPDT(dict, rel)
 		ACT_PUSH("Update")
@@ -202,11 +198,12 @@ function makepkg(pkgbases::Vector{String}, v::String)
 			S"jobs" => ODict(
 				S"makepkg" => JOB_MAKE(pkgbases, readchomp(q)),
 			),
+			delim = "\n",
 		),
 	)
 end
 function syncpkg(pkgbases::Vector{String})
-	p = s -> isdigit(s[begin]) ? Symbol(:_, s) : Symbol(s)
+	p = s::String -> isdigit(s[begin]) ? Symbol(:_, s) : Symbol(s)
 	f = ".github/workflows/repo-sync.yml"
 	mkpath(dirname(f))
 	write(f,
@@ -222,6 +219,7 @@ function syncpkg(pkgbases::Vector{String})
 			S"jobs" => ODict(
 				@. p(pkgbases) => JOB_SYNC(pkgbases)
 			),
+			delim = "\n",
 		),
 	)
 end
@@ -241,6 +239,7 @@ function updtpkg(dict::AbstractDict, rel::SymOrStr)
 			S"jobs" => ODict(
 				S"updtpkg" => JOB_UPDT(dict, rel),
 			),
+			delim = "\n",
 		),
 	)
 end
@@ -256,10 +255,10 @@ const pkg = ODict(
 	["libcurl-julia-bin"]      => (1, 1, "1.11-1"),
 	["locale-mul_zz"]          => (1, 0, "2.0-3"),
 	["mingw-w64-zlib", "nsis"] => (1, 1, "3.10-1"),
-	["wine-wow64"]             => (1, 0, "9.20-1"),
-	["wine64"]                 => (0, 1, "9.20-1"),
+	["wine-wow64"]             => (1, 0, "9.21-1"),
+	["wine64"]                 => (0, 1, "9.21-1"),
 	["xgterm-bin"]             => (1, 0, "2.2-1"),
-	["yay"]                    => (1, 0, "12.4.2-1"),
+	["yay"]                    => (1, 1, "12.4.2-1"),
 )
 for (k, v) ∈ filter((k, v)::Pair -> Bool(v[2]), pkg)
 	makepkg(k, v[3])

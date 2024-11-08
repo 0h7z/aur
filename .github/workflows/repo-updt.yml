@@ -34,12 +34,13 @@ jobs:
           token: ${{ secrets.PAT }}
       - run: |-
           patch -d / -lp1  < makepkg.patch
+          sed  's/Retries "0"/Retries "3"/' -i /etc/apt/apt.conf
           echo 'deb https://deb.debian.org/debian unstable main' >> /etc/apt/sources.list
           echo 'deb https://deb.debian.org/debian testing  main' >> /etc/apt/sources.list
           echo 'deb https://deb.debian.org/debian stable   main' >> /etc/apt/sources.list
           echo '${{ secrets.SSH_PUB }}'    > ~/.ssh/id_ecdsa.pub
           echo '${{ secrets.SSH_KEY }}'    > ~/.ssh/id_ecdsa
-          chmod 600 ~/.ssh/* && apt update  2> /dev/null
+          chmod 400 ~/.ssh/** && apt update 2> /dev/null
       - run: |-
           mkdir .github/packages/iraf-bin -p
           cd -- .github/packages/iraf-bin
@@ -49,7 +50,7 @@ jobs:
           cd - && cd iraf-bin
           ver=$(cat PKGBUILD | grep -Po '^pkgver=\K\S+')
           rel=$(cat PKGBUILD | grep -Po '^pkgrel=\K\S+')
-          [[ ${ver} != ${deb/[+-]*/} ]] && rel=1 && ver="${deb/[+-]*/}" || \
+          [[ ${ver} != ${deb/[~+-]*} ]] && rel=1 && ver="${deb/[~+-]*}" || \
           [[ ${deb} == $(cat PKGBUILD | grep -Po '^debver=\K\S+') ]] || ((rel++))
           sed -re "s/^(debver)=.+/\1=$deb/" -i PKGBUILD
           sed -re "s/^(pkgver)=.+/\1=$ver/" -i PKGBUILD
@@ -64,7 +65,7 @@ jobs:
           cd - && cd xgterm-bin
           ver=$(cat PKGBUILD | grep -Po '^pkgver=\K\S+')
           rel=$(cat PKGBUILD | grep -Po '^pkgrel=\K\S+')
-          [[ ${ver} != ${deb/[+-]*/} ]] && rel=1 && ver="${deb/[+-]*/}" || \
+          [[ ${ver} != ${deb/[~+-]*} ]] && rel=1 && ver="${deb/[~+-]*}" || \
           [[ ${deb} == $(cat PKGBUILD | grep -Po '^debver=\K\S+') ]] || ((rel++))
           sed -re "s/^(debver)=.+/\1=$deb/" -i PKGBUILD
           sed -re "s/^(pkgver)=.+/\1=$ver/" -i PKGBUILD

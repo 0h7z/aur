@@ -3,4 +3,5 @@
 /*/*.tar.xz*
 /*/pkg/
 /*/src/
+Manifest-v*.toml
 Manifest.toml
