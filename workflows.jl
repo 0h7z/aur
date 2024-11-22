@@ -23,23 +23,23 @@ const PUSH_NOP = "Everything up-to-date"
 const URL_AUR = "https://aur.archlinux.org"
 const URL_DEB = "https://deb.debian.org/debian"
 
-const cquote(s::SymOrStr) = "\$'$(escape(s, "'"))'"
+const cquote(s::SymOrStr)::String = "\$'$(escape(s, "'"))'"
 const escape(s::SymOrStr, xs...; kw...) = escape_string(s, xs...; kw...)
 const escape(sym::Symbol, xs...; kw...) = escape(string(sym), xs...; kw...)
-const mirror = [
+const mirror = String[
 	raw"https://mirrors.dotsrc.org/archlinux/$repo/os/$arch"
 	raw"https://mirrors.kernel.org/archlinux/$repo/os/$arch"
 ]
 
-const ACT_ARTIFACT(pat::SymOrStr) = ODict(
+const ACT_ARTIFACT(pat::SymOrStr) = LDict(
 	S"uses" => S"actions/upload-artifact@v4",
-	S"with" => ODict(S"compression-level" => 0, S"path" => pat),
+	S"with" => LDict(S"compression-level" => 0, S"path" => pat),
 )
 const ACT_CHECKOUT(ref::SymOrStr) = ACT_CHECKOUT(
 	S"path" => Symbol(ref),
 	S"ref"  => Symbol(ref),
 )
-const ACT_CHECKOUT(xs::Pair...) = ODict(
+const ACT_CHECKOUT(xs::Pair...) = LDict(
 	S"uses" => S"actions/checkout@v4",
 	S"with" => ODict(S"persist-credentials" => false, xs...),
 )
@@ -91,19 +91,19 @@ const ACT_PUSH(msg::SymOrStr; m = cquote(msg)) = ACT_RUN("""
 	 -d @/tmp/md.json \
 	\$u""" # https://docs.github.com/rest/commits/comments
 )
-const ACT_RUN(cmd::SymOrStr, envs::Pair...) = ODict(
+const ACT_RUN(cmd::SymOrStr, envs::Pair...) = LDict(
 	S"run" => cmd, S"env" => ODict(envs...),
 )
 const ACT_RUN(cmd::SymOrStr...) = ACT_RUN.([cmd...])
-const ACT_RUN(cmd::SymOrStr) = ODict(S"run" => cmd)
-const ACT_SYNC(pkgbase::SymOrStr) = ODict(
+const ACT_RUN(cmd::SymOrStr) = LDict(S"run" => cmd)
+const ACT_SYNC(pkgbase::SymOrStr) = LDict(
 	# https://github.com/Heptazhou/github-sync
 	S"uses" => S"heptazhou/github-sync@v2.3.0",
-	S"with" => ODict(
-		S"source_repo"        => Symbol("$URL_AUR/$pkgbase.git"),
-		S"source_branch"      => S"master",
-		S"destination_branch" => Symbol(pkgbase),
-		S"github_token"       => S"${{ secrets.PAT }}",
+	S"with" => LDict(
+		:source_repo        => Symbol("$URL_AUR/$pkgbase.git"),
+		:source_branch      => S"master",
+		:destination_branch => Symbol(pkgbase),
+		:github_token       => S"${{ secrets.PAT }}",
 	),
 )
 const ACT_UPDT(dict::AbstractDict, rel::SymOrStr) = ACT_RUN.(strip("""
@@ -112,21 +112,21 @@ const ACT_UPDT(dict::AbstractDict, rel::SymOrStr) = ACT_RUN.(strip("""
 	apt list -a $(join(src, " ")) 2> /dev/null || true
 	apt-cache show $(join(src .* "/$rel", " ")) | tee package.txt
 	deb=\$(cat package.txt | grep -Pom1 '^Version: \\K\\S+')
-	cd - && cd $pkg
+	pkg=\${deb/~rc/rc} && cd - && cd $pkg
 	ver=\$(cat PKGBUILD | grep -Po '^pkgver=\\K\\S+')
 	rel=\$(cat PKGBUILD | grep -Po '^pkgrel=\\K\\S+')
-	[[ \${ver} != \${deb/[~+-]*} ]] && \
-	rel=1 && ver="\${deb/[~+-]*}" || \\
+	[[ \${ver} != \${pkg/[+-]*/} ]] && \
+	rel=1 && ver="\${pkg/[+-]*/}" ||
 	[[ \${deb} == \$(cat PKGBUILD | grep \
 	-Po '^debver=\\K\\S+') ]] || ((rel++))
 	sed -re "s/^(debver)=.+/\\1=\$deb/" -i PKGBUILD
 	sed -re "s/^(pkgver)=.+/\\1=\$ver/" -i PKGBUILD
 	sed -re "s/^(pkgrel)=.+/\\1=\$rel/" -i PKGBUILD
 	updpkgsums && makepkg --printsrcinfo > .SRCINFO
-	""") for (pkg, src) ∈ dict
+	""") for (pkg::String, src::Vector{String}) ∈ dict
 )
 
-const JOB_MAKE(pkgbases::Vector{String}, tag::SymOrStr) = ODict(
+const JOB_MAKE(pkgbases::Vector{String}, tag::SymOrStr) = LDict(
 	S"container" => S"archlinux:base-devel",
 	S"runs-on" => S"ubuntu-latest",
 	S"steps" => [
@@ -151,11 +151,11 @@ const JOB_MAKE(pkgbases::Vector{String}, tag::SymOrStr) = ODict(
 		)
 	],
 )
-const JOB_SYNC(pkgbase::String) = ODict(
+const JOB_SYNC(pkgbase::String) = LDict(
 	S"runs-on" => S"ubuntu-latest",
 	S"steps"   => [ACT_CHECKOUT(), ACT_SYNC(pkgbase)],
 )
-const JOB_UPDT(dict::AbstractDict, rel::SymOrStr) = ODict(
+const JOB_UPDT(dict::AbstractDict, rel::SymOrStr) = LDict(
 	S"container" => S"archlinux:base-devel",
 	S"runs-on" => S"ubuntu-latest",
 	S"steps" => [
@@ -188,35 +188,35 @@ function makepkg(pkgbases::Vector{String}, v::String)
 	mkpath(dirname(f))
 	write(f,
 		yaml(
-			S"on" => ODict(
-				S"workflow_dispatch" => nothing,
-				S"push" => ODict(
-					S"branches" => ["master"],
-					S"paths"    => [q],
+			:on => LDict(
+				:workflow_dispatch => nothing,
+				:push => LDict(
+					:branches => ["master"],
+					:paths    => [q],
 				),
 			),
-			S"jobs" => ODict(
-				S"makepkg" => JOB_MAKE(pkgbases, readchomp(q)),
+			:jobs => LDict(
+				:makepkg => JOB_MAKE(pkgbases, readchomp(q)),
 			),
 			delim = "\n",
 		),
 	)
 end
 function syncpkg(pkgbases::Vector{String})
-	p = s::String -> isdigit(s[begin]) ? Symbol(:_, s) : Symbol(s)
+	p = s::String -> isdigit(first(s)) ? Symbol(:_, s) : Symbol(s)
 	f = ".github/workflows/repo-sync.yml"
 	mkpath(dirname(f))
 	write(f,
 		yaml(
-			S"on" => ODict(
-				S"workflow_dispatch" => nothing,
-				S"push" => ODict(
-					S"branches" => ["master"],
-					S"paths"    => [f],
+			:on => LDict(
+				:workflow_dispatch => nothing,
+				:push => LDict(
+					:branches => ["master"],
+					:paths    => [f],
 				),
-				S"schedule" => [ODict(S"cron" => "0 */4 * * *")],
+				:schedule => [LDict(:cron => "0 */4 * * *")],
 			),
-			S"jobs" => ODict(
+			:jobs => LDict(
 				@. p(pkgbases) => JOB_SYNC(pkgbases)
 			),
 			delim = "\n",
@@ -228,16 +228,16 @@ function updtpkg(dict::AbstractDict, rel::SymOrStr)
 	mkpath(dirname(f))
 	write(f,
 		yaml(
-			S"on" => ODict(
-				S"workflow_dispatch" => nothing,
-				S"push" => ODict(
-					S"branches" => ["master"],
-					S"paths"    => [f],
+			:on => LDict(
+				:workflow_dispatch => nothing,
+				:push => LDict(
+					:branches => ["master"],
+					:paths    => [f],
 				),
-				S"schedule" => [ODict(S"cron" => "0 */8 * * *")],
+				:schedule => [LDict(:cron => "0 */8 * * *")],
 			),
-			S"jobs" => ODict(
-				S"updtpkg" => JOB_UPDT(dict, rel),
+			:jobs => LDict(
+				:updtpkg => JOB_UPDT(dict, rel),
 			),
 			delim = "\n",
 		),
@@ -245,19 +245,19 @@ function updtpkg(dict::AbstractDict, rel::SymOrStr)
 end
 
 # https://aur.archlinux.org/packages
-const pkg = ODict(
+const pkg = LDict(
 	# [depends..., pkgbase]    => (sync, make, pkgver_pkgrel),
 	["7-zip-full"]             => (1, 1, "24.08-1"),
 	["apt-zsh-completion"]     => (1, 0, "5.9-1"),
 	["conda-zsh-completion"]   => (1, 0, "0.11-1"),
 	["glibc-linux4"]           => (1, 0, "2.38-1"),
-	["iraf-bin"]               => (1, 0, "2.18.1-2"),
+	["iraf-bin"]               => (1, 0, "2.18.1rc1-2"),
 	["libcurl-julia-bin"]      => (1, 1, "1.11-1"),
 	["locale-mul_zz"]          => (1, 0, "2.0-3"),
 	["mingw-w64-zlib", "nsis"] => (1, 1, "3.10-1"),
 	["wine-wow64"]             => (1, 0, "9.21-1"),
 	["wine64"]                 => (0, 1, "9.21-1"),
-	["xgterm-bin"]             => (1, 0, "2.2-1"),
+	["xgterm-bin"]             => (1, 0, "2.2rc1-3"),
 	["yay"]                    => (1, 1, "12.4.2-1"),
 )
 for (k, v) ∈ filter((k, v)::Pair -> Bool(v[2]), pkg)
@@ -266,7 +266,7 @@ end
 syncpkg(sort!(reduce(∪, findall(Bool ∘ first, pkg))))
 
 # https://tracker.debian.org/
-const deb = ODict(
+const deb = LDict(
 	# (pkgbase)    => [provides...],
 	("iraf-bin")   => ["iraf", "iraf-noao"],
 	("xgterm-bin") => ["xgterm"],
