@@ -17,7 +17,7 @@ jobs:
           echo -e 'Server = https://mirrors.dotsrc.org/archlinux/$repo/os/$arch' >> mirrorlist
           echo -e 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >> mirrorlist
           tac mirrorlist > mirrorlist~ && mv mirrorlist{~,} && cd /etc
-          sed -r 's/^(COMPRESSZST)=.*/\1=(zstdmt -17 -M1024M --long)/' -i makepkg.conf
+          sed -r 's/^(COMPRESSZST)=.*/\1=(zstdmt -18 -M1024M --long)/' -i makepkg.conf
           sed -r 's/^#(MAKEFLAGS)=.*/\1="-j`nproc`"/' -i makepkg.conf
           sed -r 's/^#(PACKAGER)=.*/\1="Seele <seele@0h7z.com>"/' -i makepkg.conf
           pacman-key --init
@@ -46,6 +46,6 @@ jobs:
           gh release delete $GH_TAG --cleanup-tag -y || true
           gh release create $GH_TAG *.pkg.tar.zst --target `cat head` && cat head
         env:
-          GH_TAG: 7-zip-full-v24.08-1
+          GH_TAG: 7-zip-full-v24.09-1
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.PAT }}

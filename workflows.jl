@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2024 Heptazhou <zhou@0h7z.com>
+# Copyright (C) 2022-2025 Heptazhou <zhou@0h7z.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -16,7 +16,7 @@ using Exts
 using TOML: TOML
 using YAML: yaml
 
-const COMPRESS = "zstdmt -17 -M1024M --long"
+const COMPRESS = "zstdmt -18 -M1024M --long"
 const NAME, MAIL = "Seele", "seele@0h7z.com"
 const PACKAGER = "$NAME <$MAIL>"
 const PUSH_NOP = "Everything up-to-date"
@@ -247,7 +247,7 @@ end
 # https://aur.archlinux.org/packages
 const pkg = LDict(
 	# [depends..., pkgbase]    => (sync, make, pkgver_pkgrel),
-	["7-zip-full"]             => (1, 1, "24.08-1"),
+	["7-zip-full"]             => (1, 1, "24.09-1"),
 	["apt-zsh-completion"]     => (1, 0, "5.9-1"),
 	["conda-zsh-completion"]   => (1, 0, "0.11-1"),
 	["glibc-linux4"]           => (1, 0, "2.38-1"),
@@ -255,6 +255,7 @@ const pkg = LDict(
 	["libcurl-julia-bin"]      => (1, 1, "1.11-1"),
 	["locale-mul_zz"]          => (1, 0, "2.0-3"),
 	["mingw-w64-zlib", "nsis"] => (1, 1, "3.10-1"),
+	["python312"]              => (1, 0, "3.12.8-1"),
 	["wine-wow64"]             => (1, 0, "9.21-1"),
 	["wine64"]                 => (0, 1, "9.21-1"),
 	["xgterm-bin"]             => (1, 0, "2.2rc1-3"),
