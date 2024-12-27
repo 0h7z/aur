@@ -6,8 +6,8 @@
 # Contributor: Jason Chu <jason@archlinux.org>
 
 pkgname=python310
-pkgver=3.10.14
-pkgrel=2
+pkgver=3.10.16
+pkgrel=1
 _pymajver=3
 _pybasever=${pkgver%.*}
 pkgdesc="Next generation of the python high-level scripting language, version 3.10"
@@ -23,7 +23,7 @@ optdepends=('python-setuptools'
               'xz: for lzma'
               'tk: for tkinter')
 source=("https://www.python.org/ftp/python/${pkgver%rc*}/Python-${pkgver}.tar.xz")
-sha256sums=('9c50481faa8c2832329ba0fc8868d0a606a680fc4f60ec48d26ce8e076751fda')
+sha256sums=('bfb249609990220491a1b92850a07135ed0831e41738cf681d63cf01b2a8fbd1')
 validpgpkeys=('A035C8C19219BA821ECEA86B64E628F8D684696D') # Pablo Galindo Salgado <pablogsal@gmail.com>
 provides=("python=$pkgver")
 
