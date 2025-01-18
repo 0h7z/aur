@@ -1,0 +1,51 @@
+on:
+  workflow_dispatch: ~
+  push:
+    branches:
+      - "master"
+    paths:
+      - ".github/packages/python311/version.txt"
+
+jobs:
+  makepkg:
+    container: archlinux:base-devel
+    runs-on: ubuntu-latest
+    steps:
+      - run: |-
+          uname -a
+          mkdir ~/.ssh -p && cd /etc/pacman.d
+          echo -e 'Server = https://mirrors.dotsrc.org/archlinux/$repo/os/$arch' >> mirrorlist
+          echo -e 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >> mirrorlist
+          tac mirrorlist > mirrorlist~ && mv mirrorlist{~,} && cd /etc
+          sed -r 's/^(COMPRESSZST)=.*/\1=(zstdmt -18 -M1024M --long)/' -i makepkg.conf
+          sed -r 's/^#(MAKEFLAGS)=.*/\1="-j`nproc`"/' -i makepkg.conf
+          sed -r 's/^#(PACKAGER)=.*/\1="Seele <seele@0h7z.com>"/' -i makepkg.conf
+          pacman-key --init
+      - run: |-
+          pacman -Syu --noconfirm git pacman-contrib
+          sed -r 's/\b(EUID)\s*==\s*0\b/\1 < -0/' -i /bin/makepkg
+          makepkg --version
+      - run: pacman -S --noconfirm github-cli
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          path: python311
+          ref: python311
+      - run: |-
+          cd python311
+          git rev-parse HEAD | tee ../head
+          makepkg -si --noconfirm
+          mv -vt .. *.pkg.tar.zst
+      - run: ls -lav *.pkg.tar.zst
+      - uses: actions/upload-artifact@v4
+        with:
+          compression-level: 0
+          path: "*.pkg.tar.zst"
+      - run: |-
+          gh version
+          gh release delete $GH_TAG --cleanup-tag -y || true
+          gh release create $GH_TAG *.pkg.tar.zst --target `cat head` && cat head
+        env:
+          GH_TAG: python311-v3.11.11-1
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.PAT }}

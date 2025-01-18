@@ -117,6 +117,18 @@ jobs:
           source_branch: master
           destination_branch: nsis
           github_token: ${{ secrets.PAT }}
+  python311:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: heptazhou/github-sync@v2.3.0
+        with:
+          source_repo: https://aur.archlinux.org/python311.git
+          source_branch: master
+          destination_branch: python311
+          github_token: ${{ secrets.PAT }}
   python312:
     runs-on: ubuntu-latest
     steps:
