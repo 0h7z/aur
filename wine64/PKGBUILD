@@ -1,70 +1,45 @@
 # Maintainer: Heptazhou <zhou at 0h7z dot com>
 
-# Maintainer: Daniele Basso <d dot bass05 at proton dot me>
+# https://aur.archlinux.org/packages/wine-wow64
+# https://gitlab.archlinux.org/archlinux/packaging/packages/wine
+# https://gitlab.winehq.org/wine/wine/-/wikis/Building-Wine
 
-## links:
-# https://www.winehq.org
-# https://gitlab.winehq.org/wine/wine
-# https://gitlab.winehq.org/wine/wine-staging
-# https://github.com/wine-staging/wine-staging
-
-pkgname=wine64 # wine-wow64
+pkgname=wine64
 pkgver=10.0
 _pkgver="${pkgver/rc/-rc}"
-pkgrel=1
+pkgrel=2
 pkgdesc="A compatibility layer for running Windows programs"
-url="https://www.winehq.org"
+url="https://www.winehq.org/"
 license=(LGPL-2.1-or-later)
 arch=(x86_64)
 
-depends=(
-	alsa-lib
-	fontconfig
-	freetype2
-	gettext
-	gnutls
-	gst-plugins-base-libs
-	libpcap
-	libpulse
+depends=(fontconfig libx11)
+makedepends=(mingw-w64-gcc)
+makedepends=(${makedepends[@]} ${depends[@]})
+optdepends=(
+	# Generally necessary
+	alsa-lib libpulse
+	libglvnd mesa wayland
+	libunwind
 	libxcomposite
 	libxcursor
 	libxi
-	libxinerama
 	libxkbcommon
 	libxrandr
-	opencl-icd-loader
-	pcsclite
+	# Needed for many applications
+	gstreamer gst-plugins-base-libs
 	sdl2
-	unixodbc
-	v4l-utils
-	# wayland
-	desktop-file-utils
-	libgphoto2
-)
-makedepends=(
-	libxxf86vm
-	mesa
-	mesa-libgl
-	vulkan-icd-loader
-	autoconf
-	bison
-	flex
-	mingw-w64-gcc
-	opencl-headers
-	perl
 	vulkan-headers
+	vulkan-icd-loader
+	# Rare or domain-specific
+	libcups
+	libgphoto2
+	opencl-headers
+	opencl-icd-loader # ocl-icd
+	sane
+	smbclient
+	v4l-utils
 )
-local _makeoptdeps=(
-	::alsa-plugins
-	::dosbox
-	libcups::cups
-	samba::samba
-	sane::sane
-)
-for i in "${_makeoptdeps[@]}"; do
-	[ -n "${i%%::*}" ] && makedepends+=("${i%%::*}")
-	[ -n "${i##*::}" ] && optdepends+=("${i##*::}")
-done
 
 provides=("wine=$pkgver")
 conflicts=("wine")
@@ -114,7 +89,7 @@ package() {
 	install -d "$pkgdir"/usr/share/fontconfig/conf.default
 	ln -s ../conf.avail/30-win32-aliases.conf "$pkgdir"/usr/share/fontconfig/conf.default/30-win32-aliases.conf
 
-	x86_64-w64-mingw32-strip --strip-unneeded "$pkgdir"/usr/lib/wine/x86_64-windows/*.dll
+	x86_64-w64-mingw32-strip --strip-unneeded "$pkgdir"/usr/lib/wine/x86_64-windows/*.{a,dll,exe}
 
 	install -Dm644 "$srcdir"/wine-binfmt.conf "$pkgdir"/usr/lib/binfmt.d/wine.conf
 }
