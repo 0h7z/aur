@@ -3,7 +3,7 @@
 # Maintained at https://github.com/rixx/pkgbuilds, feel free to submit patches
 
 pkgname=python312
-pkgver=3.12.8
+pkgver=3.12.9
 pkgrel=1
 _pybasever=3.12
 _pymajver=3
@@ -15,7 +15,7 @@ depends=('bzip2' 'expat' 'gdbm' 'libffi' 'libnsl' 'libxcrypt' 'openssl' 'zlib')
 makedepends=('bluez-libs' 'mpdecimal' 'gdb' 'tk')
 optdepends=('sqlite' 'mpdecimal: for decimal' 'xz: for lzma' 'tk: for tkinter')
 source=(https://www.python.org/ftp/python/${pkgver}/Python-${pkgver}.tar.xz)
-sha256sums=('c909157bb25ec114e5869124cc2a9c4a4d4c1e957ca4ff553f1edc692101154e')
+sha256sums=('7220835d9f90b37c006e9842a8dff4580aaca4318674f947302b8d28f3f81112')
 validpgpkeys=(
     '0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D'  # Ned Deily (Python release signing key) <nad@python.org>
     'E3FF2839C048B25C084DEBE9B26995E310250568'  # Łukasz Langa (GPG langa.pl) <lukasz@langa.pl>
