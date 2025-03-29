@@ -1,6 +1,6 @@
 Package: xgterm
 Source: x11iraf
-Version: 2.2~rc1+dfsg-5
+Version: 2.2+dfsg-1
 Installed-Size: 875
 Maintainer: Debian Astro Team <debian-astro-maintainers@lists.alioth.debian.org>
 Architecture: amd64
@@ -19,8 +19,8 @@ Description-md5: b0eb7364a64f0f7bda77950cc9dba0ca
 Homepage: https://github.com/iraf-community/x11iraf
 Section: science
 Priority: optional
-Filename: pool/main/x/x11iraf/xgterm_2.2~rc1+dfsg-5_amd64.deb
-Size: 334128
-MD5sum: 5b64d9c968be733240c15685a8a2adc0
-SHA256: 3cc02bed853138646401cb827d7beaa0b26838b7111a10a5cfd70942369564f7
+Filename: pool/main/x/x11iraf/xgterm_2.2+dfsg-1_amd64.deb
+Size: 333832
+MD5sum: 40560b4079f8ffe33360e5f0a6f87c70
+SHA256: 0ffa32e75324a317e783738aa466ecc5612e13dd886008fa28efe39520a01879
 
