@@ -1,6 +1,6 @@
 Package: iraf
-Version: 2.18.1~rc2-1
-Installed-Size: 32145
+Version: 2.18.1-2
+Installed-Size: 32144
 Maintainer: Debian Astro Team <debian-astro-maintainers@lists.alioth.debian.org>
 Architecture: amd64
 Depends: libc6 (>= 2.38), libreadline8t64 (>= 6.0)
@@ -24,18 +24,18 @@ Multi-Arch: foreign
 Homepage: https://iraf-community.github.io
 Section: science
 Priority: optional
-Filename: pool/main/i/iraf/iraf_2.18.1~rc2-1_amd64.deb
-Size: 6957476
-MD5sum: b6ff4807c9278bbabf2415f17b89e6e2
-SHA256: 25cac13cc65d1a6ae33a431464a6ce62868651ba345c26d497179fdea9f50847
+Filename: pool/main/i/iraf/iraf_2.18.1-2_amd64.deb
+Size: 6956960
+MD5sum: 59497dadc2a1d0eb28d36806908fd64d
+SHA256: d6dec66efc57b6e5cf8086685efc18a95a0ec4936d5219e2c867c6c3a7de4e99
 
 Package: iraf-noao
 Source: iraf
-Version: 2.18.1~rc2-1
-Installed-Size: 46866
+Version: 2.18.1-2
+Installed-Size: 46862
 Maintainer: Debian Astro Team <debian-astro-maintainers@lists.alioth.debian.org>
 Architecture: amd64
-Depends: iraf (= 2.18.1~rc2-1), libc6 (>= 2.38)
+Depends: iraf (= 2.18.1-2), libc6 (>= 2.38)
 Description-en: IRAF NOAO data reduction package
  IRAF is the "Image Reduction and Analysis Facility". The main
  IRAF distribution includes a good selection of programs for
@@ -50,8 +50,8 @@ Multi-Arch: foreign
 Homepage: https://iraf-community.github.io
 Section: science
 Priority: optional
-Filename: pool/main/i/iraf/iraf-noao_2.18.1~rc2-1_amd64.deb
-Size: 9144232
-MD5sum: b17a6a52ad95c28d2015245273abd15a
-SHA256: f0ba37bb605752f487ea6a0f7ce434666da3074120796eac7c63f89e2dcc0ba7
+Filename: pool/main/i/iraf/iraf-noao_2.18.1-2_amd64.deb
+Size: 9141756
+MD5sum: dee73aa2088491fca1ed16c22d0d1815
+SHA256: 487d687a1e958b3c9abd4f4b6c180e6c1a7a22f85817013d011dd44381a50cdb
 
