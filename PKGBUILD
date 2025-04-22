@@ -1,5 +1,5 @@
 pkgname=nsis
-pkgver=3.10
+pkgver=3.11
 pkgrel=1
 pkgdesc='A professional open source system to create Windows installers'
 arch=('x86_64')
@@ -9,7 +9,7 @@ depends=('gcc-libs')
 makedepends=('scons' 'mingw-w64-gcc' 'mingw-w64-zlib')
 options=(!strip)
 source=(http://downloads.sourceforge.net/project/nsis/NSIS%203/$pkgver/$pkgname-$pkgver-src.tar.bz2)
-sha256sums=('11b54a6307ab46fef505b2700aaf6f62847c25aa6eebaf2ae0aab2f17f0cb297')
+sha256sums=('19e72062676ebdc67c11dc032ba80b979cdbffd3886c60b04bb442cdd401ff4b')
 
 prepare() {
   cd "$srcdir/$pkgname-$pkgver-src"
