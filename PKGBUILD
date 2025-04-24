@@ -3,8 +3,8 @@
 pkgbase_=x11iraf
 pkgname_=xgterm
 pkgname=$pkgname_-bin
-debver=2.2~rc1+dfsg-2
-pkgver=2.2~rc1
+debver=2.2+dfsg-1
+pkgver=2.2
 pkgrel=1
 pkgdesc="Terminal emulator to work with IRAF"
 arch=("x86_64")
@@ -17,7 +17,7 @@ conflicts=("$pkgname_")
 depends=("libxaw" "ncurses" "tcl" "xaw3d")
 optdepends=("iraf: Image Reduction and Analysis Facility")
 source=(${url_}/${pkgname_}_${debver}_amd64.deb)
-sha256sums=("99bef4f2571135e0498949002131e8f8c56336cb657e205300585b348fe59d28")
+sha256sums=("0ffa32e75324a317e783738aa466ecc5612e13dd886008fa28efe39520a01879")
 # https://tracker.debian.org/pkg/x11iraf
 
 package() {
