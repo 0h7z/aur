@@ -5,9 +5,9 @@
 # https://gitlab.winehq.org/wine/wine/-/wikis/Building-Wine
 
 pkgname=wine64
-pkgver=10.0
+pkgver=10.6
 _pkgver="${pkgver/rc/-rc}"
-pkgrel=2
+pkgrel=1
 pkgdesc="A compatibility layer for running Windows programs"
 url="https://www.winehq.org/"
 license=(LGPL-2.1-or-later)
@@ -50,12 +50,12 @@ backup=("usr/lib/binfmt.d/wine.conf")
 options=(staticlibs strip !debug !lto)
 
 source=(
-	"https://dl.winehq.org/wine/source/${pkgver}/wine-$_pkgver.tar.xz"
+	"https://dl.winehq.org/wine/source/${pkgver/.*/}.x/wine-$_pkgver.tar.xz"
 	"30-win32-aliases.conf"
 	"wine-binfmt.conf"
 )
 b2sums=(
-	"92178cf484cf33e9f3b8340429ee8e68c36e0d25eee4a892f059ab73f103cfcb9eb15e1883bc9fd8c8fe311d4ccbb56582d1f780da7b1406a7839a13addd29ae"
+	"8d54ab3e0d3ce5fe35d74c938e68143c9c64cc9260081e917e7e8197ef2977bd9ac0df799c050b216609326d1474937292896c92f5f3b58b76f24c3a1578392b"
 	"45db34fb35a679dc191b4119603eba37b8008326bd4f7d6bd422fbbb2a74b675bdbc9f0cc6995ed0c564cf088b7ecd9fbe2d06d42ff8a4464828f3c4f188075b"
 	"e9de76a32493c601ab32bde28a2c8f8aded12978057159dd9bf35eefbf82f2389a4d5e30170218956101331cf3e7452ae82ad0db6aad623651b0cc2174a61588"
 )
@@ -82,7 +82,7 @@ package() {
 		libdir="$pkgdir"/usr/lib \
 		dlldir="$pkgdir"/usr/lib/wine install
 
-	ln -s "$pkgdir"/usr/bin/wine{64,} -r
+	ln -s "$pkgdir"/usr/bin/wine{,64} -r
 
 	# Font aliasing settings for Win32 applications
 	install -Dm644 "$srcdir"/30-win32-aliases.conf -t "$pkgdir"/usr/share/fontconfig/conf.avail/
