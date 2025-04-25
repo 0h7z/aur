@@ -46,6 +46,6 @@ jobs:
           gh release delete $GH_TAG --cleanup-tag -y || true
           gh release create $GH_TAG *.pkg.tar.zst --target `cat head` && cat head
         env:
-          GH_TAG: wine64-v10.0-2
+          GH_TAG: wine64-v10.6-1
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.PAT }}
