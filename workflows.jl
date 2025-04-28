@@ -166,6 +166,9 @@ const JOB_UPDT(dict::AbstractDict, rel::SymOrStr) = LDict(
 		)
 		ACT_RUN("""
 			patch -d / -lp1  < makepkg.patch
+			#* https://gitlab.archlinux.org/archlinux/packaging/packages/apt/-/issues/17
+			sqv -V && for f in /usr/share/apt/*; do pacman -Qo \$f; cat -n \$f; done
+			sed  's/^(brainpoolp384)/# \\1/' -ri /usr/share/apt/default-sequoia.config
 			sed  's/Retries "0"/Retries "3"/' -i /etc/apt/apt.conf
 			echo 'deb $URL_DEB unstable main' >> /etc/apt/sources.list
 			echo 'deb $URL_DEB testing  main' >> /etc/apt/sources.list
