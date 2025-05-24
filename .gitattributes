@@ -6,3 +6,4 @@
 *.patch linguist-vendored
 /.github/packages/*/package.txt linguist-vendored
 /.github/workflows/*.yml linguist-generated
+/python*/EXTERNALLY-MANAGED linguist-language=INI
