@@ -59,7 +59,7 @@ build() {
 		--enable-shared \
 		--with-computed-gotos \
 		--enable-optimizations \
-		--with-lto \
+		--with-lto=no \
 		--enable-ipv6 \
 		--with-system-expat \
 		--with-dbmliborder=gdbm:ndbm \

@@ -46,6 +46,6 @@ jobs:
           gh release delete $GH_TAG --cleanup-tag -y || true
           gh release create $GH_TAG *.pkg.tar.zst --target `cat head` && cat head
         env:
-          GH_TAG: python311-v3.11.11-1
+          GH_TAG: python311-v3.11.11-3
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.PAT }}

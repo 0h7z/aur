@@ -46,6 +46,6 @@ jobs:
           gh release delete $GH_TAG --cleanup-tag -y || true
           gh release create $GH_TAG *.pkg.tar.zst --target `cat head` && cat head
         env:
-          GH_TAG: python310-v3.10.16-1
+          GH_TAG: python310-v3.10.16-3
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.PAT }}
