@@ -1,33 +1,36 @@
-# Maintainer: soh @ AUR
+# Maintainer: Heptazhou <zhou at 0h7z dot com>
+# Contributor: morwel
 # Contributor: Angel Velasquez <angvp@archlinux.org>
-# Contributor: Felix Yan <felixonmars@archlinux.org>
 # Contributor: Stéphane Gaudreault <stephane@archlinux.org>
 # Contributor: Allan McRae <allan@archlinux.org>
 # Contributor: Jason Chu <jason@archlinux.org>
+# Contributor: Felix Yan <felixonmars@archlinux.org>
 
 pkgname=python310
 pkgver=3.10.16
-pkgrel=1
-_pymajver=3
+pkgrel=2
 _pybasever=${pkgver%.*}
-pkgdesc="Next generation of the python high-level scripting language, version 3.10"
+pkgdesc="The Python programming language (version 3.10)"
 arch=("x86_64")
-license=("custom")
+license=("PSF-2.0")
 url="https://www.python.org/"
-depends=("bzip2" "expat" "gdbm" "libffi" "libnsl" "libxcrypt" "openssl" "zlib")
-makedepends=("tk" "sqlite" "bluez-libs" "mpdecimal" "llvm" "gdb")
-optdepends=(
-	"python-setuptools"
-	"python-pip"
-	"sqlite"
-	"mpdecimal: for decimal"
-	"xz: for lzma"
-	"tk: for tkinter"
+depends=("mpdecimal")
+makedepends=("bluez-libs" "gdb" "llvm" "tk" "ttf-font")
+optdepends=("python-pip" "python-pipx" "python-setuptools" "tk")
+options=(strip !debug !lto)
+source=(
+	https://www.python.org/ftp/python/${pkgver%rc*}/Python-${pkgver}.tar.xz #{,.asc}
+	EXTERNALLY-MANAGED
 )
-source=("https://www.python.org/ftp/python/${pkgver%rc*}/Python-${pkgver}.tar.xz")
-sha256sums=("bfb249609990220491a1b92850a07135ed0831e41738cf681d63cf01b2a8fbd1")
-validpgpkeys=("A035C8C19219BA821ECEA86B64E628F8D684696D") # Pablo Galindo Salgado <pablogsal@gmail.com>
-provides=("python=$pkgver")
+sha256sums=(
+	"bfb249609990220491a1b92850a07135ed0831e41738cf681d63cf01b2a8fbd1" # "SKIP"
+	"d96bca8f7be0d1a83eb88f7c40924434168b1cb8a57870a55ad34207a3718c0a"
+)
+validpgpkeys=(
+	"0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D" # Ned Deily (Python release signing key) <nad@python.org>
+	"E3FF2839C048B25C084DEBE9B26995E310250568" # Łukasz Langa (GPG langa.pl) <lukasz@langa.pl>
+	"A035C8C19219BA821ECEA86B64E628F8D684696D" # Pablo Galindo Salgado <pablogsal@gmail.com>
+)
 
 prepare() {
 	cd Python-${pkgver}
@@ -55,11 +58,10 @@ build() {
 		--enable-shared \
 		--with-computed-gotos \
 		--enable-optimizations \
-		--with-lto \
+		--with-lto=no \
 		--enable-ipv6 \
 		--with-system-expat \
 		--with-dbmliborder=gdbm:ndbm \
-		--with-system-ffi \
 		--with-system-libmpdec \
 		--enable-loadable-sqlite-extensions \
 		--without-ensurepip \
@@ -79,21 +81,29 @@ package() {
 
 	make DESTDIR="${pkgdir}" EXTRA_CFLAGS="$CFLAGS" altinstall maninstall
 
-	# Split tests
-	rm -r "$pkgdir"/usr/lib/python*/{test,ctypes/test,distutils/tests,idlelib/idle_test,lib2to3/tests,sqlite3/test,tkinter/test,unittest/test}
+	# Why are these not done by default...
+	# ln -s python3               "${pkgdir}"/usr/bin/python
+	# ln -s python3-config        "${pkgdir}"/usr/bin/python-config
+	# ln -s idle3                 "${pkgdir}"/usr/bin/idle
+	# ln -s pydoc3                "${pkgdir}"/usr/bin/pydoc
+	# ln -s python${_pybasever}.1 "${pkgdir}"/usr/share/man/man1/python.1
 
 	# Avoid conflicts with the main "python" package.
-	rm -f "${pkgdir}/usr/lib/libpython${_pymajver}.so"
-	rm -f "${pkgdir}/usr/share/man/man1/python${_pymajver}.1"
+	rm -f "${pkgdir}/usr/lib/libpython3.so"
+	rm -f "${pkgdir}/usr/share/man/man1/python3.1"
 
 	# Clean-up reference to build directory
-	sed -i "s|$srcdir/Python-${pkgver}:||" "$pkgdir/usr/lib/python${_pybasever}/config-${_pybasever}-${CARCH}-linux-gnu/Makefile"
+	# sed -i "s|$srcdir/Python-${pkgver}||" "$pkgdir/usr/lib/python${_pybasever}/config-${_pybasever}-${CARCH}-linux-gnu/Makefile"
 
 	# some useful "stuff" FS#46146
 	install -dm755 "${pkgdir}"/usr/lib/python${_pybasever}/Tools/{i18n,scripts}
 	install -m755 Tools/i18n/{msgfmt,pygettext}.py "${pkgdir}"/usr/lib/python${_pybasever}/Tools/i18n/
 	install -m755 Tools/scripts/{README,*py} "${pkgdir}"/usr/lib/python${_pybasever}/Tools/scripts/
 
-	# License
-	install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+	# PEP668
+	install -Dm644 "$srcdir"/EXTERNALLY-MANAGED -t "${pkgdir}/usr/lib/python${_pybasever}/"
+
+	# Split tests
+	cd "$pkgdir"/usr/lib/python*/
+	rm -r test && rm -r */*test*/
 }
