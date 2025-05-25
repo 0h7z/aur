@@ -8,14 +8,14 @@
 
 pkgname=python310
 pkgver=3.10.16
-pkgrel=2
+pkgrel=3
 _pybasever=${pkgver%.*}
 pkgdesc="The Python programming language (version 3.10)"
 arch=("x86_64")
 license=("PSF-2.0")
 url="https://www.python.org/"
 depends=("mpdecimal")
-makedepends=("bluez-libs" "gdb" "llvm" "tk" "ttf-font")
+makedepends=("gdb")
 optdepends=("python-pip" "python-pipx" "python-setuptools" "tk")
 options=(strip !debug !lto)
 source=(
