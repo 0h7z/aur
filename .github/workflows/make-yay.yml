@@ -23,6 +23,7 @@ jobs:
           pacman-key --init
       - run: |-
           pacman -Syu --noconfirm git pacman-contrib
+          git config --global color.ui always
           git config --global init.defaultbranch master
           git config --global log.date iso
           git config --global pull.rebase true

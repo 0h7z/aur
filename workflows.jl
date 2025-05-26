@@ -59,6 +59,7 @@ const ACT_INIT(cmd::SymOrStr, envs::Pair...) = ACT_RUN("""
 	sed -r 's/^#(PACKAGER)=.*/\\1="$PACKAGER"/' -i makepkg.conf
 	pacman-key --init""", """
 	pacman -Syu --noconfirm git pacman-contrib
+	git config --global color.ui always
 	git config --global init.defaultbranch master
 	git config --global log.date iso
 	git config --global pull.rebase true
@@ -158,7 +159,7 @@ const JOB_MAKE(pkgbases::Vector{String}) = LDict(
 	S"container" => S"archlinux:base-devel",
 	S"runs-on" => S"ubuntu-latest",
 	S"steps" => [
-		ACT_INIT(["openssh", "tree"])
+		ACT_INIT(["jq", "openssh"])
 		ACT_CHECKOUT(
 			S"persist-credentials" => true,
 			S"token" => S"${{ secrets.PAT }}",

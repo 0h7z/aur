@@ -23,13 +23,14 @@ jobs:
           pacman-key --init
       - run: |-
           pacman -Syu --noconfirm git pacman-contrib
+          git config --global color.ui always
           git config --global init.defaultbranch master
           git config --global log.date iso
           git config --global pull.rebase true
           git config --global safe.directory "*"
           sed -r 's/\b(EUID)\s*==\s*0\b/\1 < -0/' -i /bin/makepkg
           makepkg --version
-      - run: pacman -S --noconfirm openssh tree
+      - run: pacman -S --noconfirm jq openssh
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
