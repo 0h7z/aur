@@ -4,12 +4,10 @@ on:
     branches:
       - "master"
     paths:
-      - ".github/workflows/repo-updt.yml"
-  schedule:
-    - cron: "0 */8 * * *"
+      - "apt-zsh-completion/**"
 
 jobs:
-  updtpkg:
+  makepkg:
     container: archlinux:base-devel
     runs-on: ubuntu-latest
     steps:
@@ -31,48 +29,19 @@ jobs:
           git config --global safe.directory "*"
           sed -r 's/\b(EUID)\s*==\s*0\b/\1 < -0/' -i /bin/makepkg
           makepkg --version
-      - run: pacman -S --noconfirm apt debian-archive-keyring jq openssh
+      - run: pacman -S --noconfirm openssh tree
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
+      - run: "patch -d / -lp1  < makepkg.patch"
       - run: |-
-          patch -d / -lp1  < makepkg.patch
-          sed  's/Retries "0"/Retries "3"/' -i /etc/apt/apt.conf
-          echo 'deb https://deb.debian.org/debian unstable main' >> /etc/apt/sources.list
-          echo 'deb https://deb.debian.org/debian testing  main' >> /etc/apt/sources.list
-          echo 'deb https://deb.debian.org/debian stable   main' >> /etc/apt/sources.list
-          apt update 2> /dev/null
-      - run: |-
-          mkdir .github/packages/iraf-bin -p
-          cd -- .github/packages/iraf-bin
-          apt list -a iraf iraf-noao 2> /dev/null || true
-          apt-cache show iraf/sid iraf-noao/sid | tee package.txt
-          deb=$(cat package.txt | grep -Pom1 '^Version: \K\S+')
-          pkg=${deb/~rc/rc} && cd - && cd iraf-bin
-          ver=$(cat PKGBUILD | grep -Po '^pkgver=\K\S+')
-          rel=$(cat PKGBUILD | grep -Po '^pkgrel=\K\S+')
-          [[ ${ver} != ${pkg/[+-]*/} ]] && rel=1 && ver="${pkg/[+-]*/}" ||
-          [[ ${deb} == $(cat PKGBUILD | grep -Po '^debver=\K\S+') ]] || ((rel++))
-          sed -re "s/^(debver)=.+/\1=$deb/" -i PKGBUILD
-          sed -re "s/^(pkgver)=.+/\1=$ver/" -i PKGBUILD
-          sed -re "s/^(pkgrel)=.+/\1=$rel/" -i PKGBUILD
-          updpkgsums && makepkg --printsrcinfo > .SRCINFO
-      - run: |-
-          mkdir .github/packages/xgterm-bin -p
-          cd -- .github/packages/xgterm-bin
-          apt list -a xgterm 2> /dev/null || true
-          apt-cache show xgterm/sid | tee package.txt
-          deb=$(cat package.txt | grep -Pom1 '^Version: \K\S+')
-          pkg=${deb/~rc/rc} && cd - && cd xgterm-bin
-          ver=$(cat PKGBUILD | grep -Po '^pkgver=\K\S+')
-          rel=$(cat PKGBUILD | grep -Po '^pkgrel=\K\S+')
-          [[ ${ver} != ${pkg/[+-]*/} ]] && rel=1 && ver="${pkg/[+-]*/}" ||
-          [[ ${deb} == $(cat PKGBUILD | grep -Po '^debver=\K\S+') ]] || ((rel++))
-          sed -re "s/^(debver)=.+/\1=$deb/" -i PKGBUILD
-          sed -re "s/^(pkgver)=.+/\1=$ver/" -i PKGBUILD
-          sed -re "s/^(pkgrel)=.+/\1=$rel/" -i PKGBUILD
-          updpkgsums && makepkg --printsrcinfo > .SRCINFO
+          cd apt-zsh-completion
+          updpkgsums
+          makepkg --printsrcinfo > .SRCINFO
+          git diff -w .
+          git restore .
+          makepkg --printsrcinfo > .SRCINFO
       - run: |-
           git version
           git config --global commit.gpgsign true
@@ -92,3 +61,13 @@ jobs:
           echo '```s'    >> /tmp/md && git show --stat -w >> /tmp/md
           echo '```'     >> /tmp/md && cat /tmp/md | jq -Rs $'{ body: . }' > /tmp/md.json
           echo $u && curl -LX POST -H 'Authorization: token ${{ secrets.PAT }}' -d @/tmp/md.json $u
+      - run: |-
+          cd apt-zsh-completion
+          git rev-parse HEAD | tee ../head
+          makepkg -si --noconfirm
+          mv -vt .. *.pkg.tar.zst
+      - run: ls -lav *.pkg.tar.zst
+      - uses: actions/upload-artifact@v4
+        with:
+          compression-level: 0
+          path: "*.pkg.tar.zst"
