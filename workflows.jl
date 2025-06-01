@@ -20,6 +20,7 @@ const COMPRESS = "zstdmt -18 -M1024M --long"
 const NAME, MAIL = "Seele", "seele@0h7z.com"
 const PACKAGER = "$NAME <$MAIL>"
 const PUSH_NOP = "Everything up-to-date"
+const PUSH_REJ = "error: failed to push some refs to"
 const URL_AUR = "https://aur.archlinux.org"
 const URL_DEB = "https://deb.debian.org/debian"
 
@@ -62,6 +63,7 @@ const ACT_INIT(cmd::SymOrStr, envs::Pair...) = ACT_RUN("""
 	git config --global color.ui always
 	git config --global init.defaultbranch master
 	git config --global log.date iso
+	git config --global log.decorate short
 	git config --global pull.rebase true
 	git config --global safe.directory "*"
 	sed -r 's/\\b(EUID)\\s*==\\s*0\\b/\\1 < -0/' -i /bin/makepkg
@@ -70,7 +72,7 @@ const ACT_INIT(cmd::SymOrStr, envs::Pair...) = ACT_RUN("""
 const ACT_INIT(pkg::Vector{String}) = ACT_INIT(
 	Symbol(join(["pacman -S --noconfirm"; pkg], " ")),
 )
-const ACT_PUSH(msg::SymOrStr; m = cquote(msg)) = ACT_RUN("""
+const ACT_PUSH(msg::SymOrStr...; m = cquote(join(msg, "\n"))) = ACT_RUN("""
 	git version
 	git config --global commit.gpgsign true
 	git config --global gpg.format ssh
@@ -81,19 +83,21 @@ const ACT_PUSH(msg::SymOrStr; m = cquote(msg)) = ACT_RUN("""
 	echo '\${{ secrets.SSH_KEY }}'    > ~/.ssh/id_ecdsa
 	chmod 400 ~/.ssh/id*
 	git add --all && git commit --allow-empty-message -m $m || true
+	i=1; while true; do ((i++ < 05)) || exit 1
 	git pull -ftp && git push |& tee /tmp/push
+	grep $(cquote(PUSH_REJ)) /tmp/push -aw || break; sleep \$i; done
 	git rev-parse HEAD | tee /tmp/head
 	sha=`cat /tmp/head` u=\${{ github.api_url }}/repos/\
 	\${{ github.repository }}/commits/\$sha/comments
 	grep $(cquote(PUSH_NOP)) /tmp/push -ax && exit
 	echo @Heptazhou > /tmp/md
-	echo '```s'    >> /tmp/md && git show --stat -w >> /tmp/md
-	echo '```'     >> /tmp/md && cat /tmp/md | jq -Rs \
+	echo '```s'    >> /tmp/md && git show --stat -w | tee -a /tmp/md
+	echo '```'     >> /tmp/md && sed 's/\\x1b\\[[0-9;]*m//g' /tmp/md | jq -Rs \
 	\$'{ body: . }' > /tmp/md.json
 	echo \$u && curl -LX POST \
 	 -H 'Authorization: token \${{ secrets.PAT }}' \
-	 -d @/tmp/md.json \
-	\$u""" # https://docs.github.com/rest/commits/comments
+	 -d @/tmp/md.json \$u | jq -Cr \
+	.html_url""" # https://docs.github.com/rest/commits/comments
 )
 const ACT_RUN(cmd::SymOrStr, envs::Pair...) = LDict(
 	S"run" => cmd, S"env" => ODict(envs...),
@@ -177,7 +181,7 @@ const JOB_MAKE(pkgbases::Vector{String}) = LDict(
 			makepkg --printsrcinfo > .SRCINFO
 			"""), pkgbases)
 		)
-		ACT_PUSH("Update")
+		ACT_PUSH("Update $(pkgbases[end])", "[skip ci]")
 		ACT_RUN.([
 			map(pkgbase -> strip("""
 			cd $pkgbase
@@ -322,7 +326,7 @@ const pkg = LDict{Vector{String}, PackageMeta}(
 	["mingw-w64-zlib", "nsis"] => (1, 1, 0, "3.11-1"),
 	["python310"]              => (1, 1, 1, "3.10.17-1"),
 	["python311"]              => (1, 1, 1, "3.11.12-1"),
-	["python312"]              => (1, 1, 0, "3.12.10-1"),
+	["python312"]              => (1, 1, 1, "3.12.10-1"),
 	["wine-wow64"]             => (0, 1, 0, "10.8-1"),
 	["wine64"]                 => (1, 0, 0, "10.6-1"),
 	["xgterm-bin"]             => (0, 1, 0, "2.2-1"),

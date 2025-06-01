@@ -4,7 +4,7 @@ on:
     branches:
       - "master"
     paths:
-      - "python310/**"
+      - "python312/**"
 
 jobs:
   makepkg:
@@ -38,7 +38,7 @@ jobs:
           token: ${{ secrets.PAT }}
       - run: "patch -d / -lp1  < makepkg.patch"
       - run: |-
-          cd python310
+          cd python312
           updpkgsums
           makepkg --printsrcinfo > .SRCINFO
           git diff -w .
@@ -54,7 +54,7 @@ jobs:
           echo '${{ secrets.SSH_PUB }}'    > ~/.ssh/id_ecdsa.pub
           echo '${{ secrets.SSH_KEY }}'    > ~/.ssh/id_ecdsa
           chmod 400 ~/.ssh/id*
-          git add --all && git commit --allow-empty-message -m $'Update python310\n[skip ci]' || true
+          git add --all && git commit --allow-empty-message -m $'Update python312\n[skip ci]' || true
           i=1; while true; do ((i++ < 05)) || exit 1
           git pull -ftp && git push |& tee /tmp/push
           grep $'error: failed to push some refs to' /tmp/push -aw || break; sleep $i; done
@@ -66,7 +66,7 @@ jobs:
           echo '```'     >> /tmp/md && sed 's/\x1b\[[0-9;]*m//g' /tmp/md | jq -Rs $'{ body: . }' > /tmp/md.json
           echo $u && curl -LX POST -H 'Authorization: token ${{ secrets.PAT }}' -d @/tmp/md.json $u | jq -Cr .html_url
       - run: |-
-          cd python310
+          cd python312
           git rev-parse HEAD | tee ../head
           makepkg -si --noconfirm
           mv -vt .. *.pkg.tar.zst

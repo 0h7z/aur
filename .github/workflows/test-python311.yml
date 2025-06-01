@@ -26,6 +26,7 @@ jobs:
           git config --global color.ui always
           git config --global init.defaultbranch master
           git config --global log.date iso
+          git config --global log.decorate short
           git config --global pull.rebase true
           git config --global safe.directory "*"
           sed -r 's/\b(EUID)\s*==\s*0\b/\1 < -0/' -i /bin/makepkg
@@ -53,15 +54,17 @@ jobs:
           echo '${{ secrets.SSH_PUB }}'    > ~/.ssh/id_ecdsa.pub
           echo '${{ secrets.SSH_KEY }}'    > ~/.ssh/id_ecdsa
           chmod 400 ~/.ssh/id*
-          git add --all && git commit --allow-empty-message -m $'Update' || true
+          git add --all && git commit --allow-empty-message -m $'Update python311\n[skip ci]' || true
+          i=1; while true; do ((i++ < 05)) || exit 1
           git pull -ftp && git push |& tee /tmp/push
+          grep $'error: failed to push some refs to' /tmp/push -aw || break; sleep $i; done
           git rev-parse HEAD | tee /tmp/head
           sha=`cat /tmp/head` u=${{ github.api_url }}/repos/${{ github.repository }}/commits/$sha/comments
           grep $'Everything up-to-date' /tmp/push -ax && exit
           echo @Heptazhou > /tmp/md
-          echo '```s'    >> /tmp/md && git show --stat -w >> /tmp/md
-          echo '```'     >> /tmp/md && cat /tmp/md | jq -Rs $'{ body: . }' > /tmp/md.json
-          echo $u && curl -LX POST -H 'Authorization: token ${{ secrets.PAT }}' -d @/tmp/md.json $u
+          echo '```s'    >> /tmp/md && git show --stat -w | tee -a /tmp/md
+          echo '```'     >> /tmp/md && sed 's/\x1b\[[0-9;]*m//g' /tmp/md | jq -Rs $'{ body: . }' > /tmp/md.json
+          echo $u && curl -LX POST -H 'Authorization: token ${{ secrets.PAT }}' -d @/tmp/md.json $u | jq -Cr .html_url
       - run: |-
           cd python311
           git rev-parse HEAD | tee ../head

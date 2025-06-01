@@ -4,6 +4,7 @@ pkgbase = python311
 	pkgrel = 1
 	url = https://www.python.org/
 	arch = x86_64
+	arch = aarch64
 	license = PSF-2.0
 	makedepends = gdb
 	depends = mpdecimal
