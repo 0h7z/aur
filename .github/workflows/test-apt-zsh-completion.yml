@@ -41,9 +41,7 @@ jobs:
           cd apt-zsh-completion
           updpkgsums
           makepkg --printsrcinfo > .SRCINFO
-          git diff -w .
-          git restore .
-          makepkg --printsrcinfo > .SRCINFO
+          git diff --patch-with-stat -w .
       - run: |-
           git version
           git config --global commit.gpgsign true

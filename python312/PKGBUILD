@@ -7,8 +7,8 @@
 # Contributor: Felix Yan <felixonmars@archlinux.org>
 
 pkgname=python312
-pkgver=3.12.10
-pkgrel=3
+pkgver=3.12.11
+pkgrel=1
 _pybasever=${pkgver%.*}
 pkgdesc="The Python programming language (version 3.12)"
 arch=("x86_64" "aarch64")
@@ -23,7 +23,7 @@ source=(
 	EXTERNALLY-MANAGED
 )
 sha256sums=(
-	"07ab697474595e06f06647417d3c7fa97ded07afc1a7e4454c5639919b46eaea" # "SKIP"
+	"07ab697474595e06f06647417d3c7fa97ded07afc1a7e4454c5639919b46eaea"
 	"d96bca8f7be0d1a83eb88f7c40924434168b1cb8a57870a55ad34207a3718c0a"
 )
 validpgpkeys=(

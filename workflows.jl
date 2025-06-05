@@ -176,10 +176,8 @@ const JOB_MAKE(pkgbases::Vector{String}) = LDict(
 			cd $pkgbase
 			updpkgsums
 			makepkg --printsrcinfo > .SRCINFO
-			git diff -w .
-			git restore .
-			makepkg --printsrcinfo > .SRCINFO
-			"""), pkgbases)
+			git diff --patch-with-stat -w .
+			"""), pkgbases),
 		)
 		ACT_PUSH("Update $(pkgbases[end])", "[skip ci]")
 		ACT_RUN.([
@@ -314,7 +312,7 @@ end
 Base.convert(::Type{PackageMeta}, xs::Tuple) = PackageMeta(xs...)
 
 # https://aur.archlinux.org/packages
-const pkg = LDict{Vector{String}, PackageMeta}(
+const pkg = ODict{Vector{String}, PackageMeta}(
 	# [depends..., pkgbase]    => (m, s, t, ver-rel),
 	["7-zip-full"]             => (1, 1, 0, "24.09-1"),
 	["apt-zsh-completion"]     => (0, 1, 1, "5.9-1"),
@@ -339,7 +337,7 @@ end
 syncpkg(sort(reduce(∪, findall(v -> v.sync, pkg))))
 
 # https://tracker.debian.org/
-const deb = LDict{String, Vector{String}}(
+const deb = ODict{String, Vector{String}}(
 	# (pkgbase)    => [provides...],
 	("iraf-bin")   => ["iraf", "iraf-noao"],
 	("xgterm-bin") => ["xgterm"],
