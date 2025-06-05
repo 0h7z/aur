@@ -7,11 +7,11 @@
 # Contributor: Felix Yan <felixonmars@archlinux.org>
 
 pkgname=python310
-pkgver=3.10.17
+pkgver=3.10.18
 pkgrel=1
 _pybasever=${pkgver%.*}
 pkgdesc="The Python programming language (version 3.10)"
-arch=("x86_64")
+arch=("x86_64" "aarch64")
 license=("PSF-2.0")
 url="https://www.python.org/"
 depends=("mpdecimal")
@@ -23,7 +23,7 @@ source=(
 	EXTERNALLY-MANAGED
 )
 sha256sums=(
-	"4c68050f049d1b4ac5aadd0df5f27941c0350d2a9e7ab0907ee5eb5225d9d6b0" # "SKIP"
+	"ae665bc678abd9ab6a6e1573d2481625a53719bc517e9a634ed2b9fefae3817f"
 	"d96bca8f7be0d1a83eb88f7c40924434168b1cb8a57870a55ad34207a3718c0a"
 )
 validpgpkeys=(
