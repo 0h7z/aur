@@ -1,24 +1,12 @@
-# Maintainer: Daniele Basso <d dot bass05 at proton dot me>
-
-## links:
-# https://www.winehq.org
-# https://gitlab.winehq.org/wine/wine
-# https://gitlab.winehq.org/wine/wine-staging
-# https://github.com/wine-staging/wine-staging
+# Maintainer:
 
 pkgname="wine-wow64"
 pkgver=10.10
-_pkgver="${pkgver/rc/-rc}"
-pkgrel=2
-pkgdesc="A compatibility layer for running Windows programs"
-url="https://www.winehq.org"
-license=('LGPL-2.1-or-later')
-arch=('x86_64')
-
-depends=(wine)
+pkgrel=3
+pkgdesc="metapackage - migrate to extra/wine"
+arch=('any')
 
 package() {
-  echo "please uninstall the metapackage!"
+  depends=('wine>=10.9')
+  echo "please uninstall wine-wow64 metapackage!"
 }
-
-# vim:set ts=8 sts=2 sw=2 et:
