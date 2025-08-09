@@ -8,7 +8,7 @@
 
 pkgname=python312
 pkgver=3.12.11
-pkgrel=1
+pkgrel=2
 _pybasever=${pkgver%.*}
 pkgdesc="The Python programming language (version 3.12)"
 arch=("x86_64" "aarch64")
