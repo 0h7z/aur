@@ -6,7 +6,7 @@
 # Contributor: Jason Chu <jason@archlinux.org>
 
 pkgname=python
-pkgver=3.13.4
+pkgver=3.13.9
 pkgrel=1
 _pybasever=${pkgver%.*}
 pkgdesc="The Python programming language"

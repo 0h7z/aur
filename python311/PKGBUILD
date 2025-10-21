@@ -7,8 +7,8 @@
 # Contributor: Felix Yan <felixonmars@archlinux.org>
 
 pkgname=python311
-pkgver=3.11.13
-pkgrel=2
+pkgver=3.11.14
+pkgrel=1
 _pybasever=${pkgver%.*}
 pkgdesc="The Python programming language (version 3.11)"
 arch=("x86_64" "aarch64")
