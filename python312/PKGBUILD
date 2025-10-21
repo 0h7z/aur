@@ -23,7 +23,7 @@ source=(
 	EXTERNALLY-MANAGED
 )
 sha256sums=(
-	"c30bb24b7f1e9a19b11b55a546434f74e739bb4c271a3e3a80ff4380d49f7adb"
+	"fb85a13414b028c49ba18bbd523c2d055a30b56b18b92ce454ea2c51edc656c4"
 	"d96bca8f7be0d1a83eb88f7c40924434168b1cb8a57870a55ad34207a3718c0a"
 )
 validpgpkeys=(
