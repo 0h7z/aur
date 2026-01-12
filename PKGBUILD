@@ -30,6 +30,10 @@ prepare() {
   # rather than copies shipped in the tarball
   rm -rf Modules/expat
   rm -rf Modules/_decimal/libmpdec
+
+  # use parallel LTO
+  # https://github.com/python/cpython/pull/132258
+  sed -i 's/\(LTOFLAGS=.*\) -flto-partition=none/\1/' configure
 }
 
 build() {
