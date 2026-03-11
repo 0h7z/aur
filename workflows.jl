@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2025 Heptazhou <zhou@0h7z.com>
+# Copyright (C) 2022-2026 Heptazhou <zhou@0h7z.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -311,30 +311,33 @@ end
 end
 Base.convert(::Type{PackageMeta}, xs::Tuple) = PackageMeta(xs...)
 
+# [PRQ#75686] Deletion Request for glibc-linux4
+# https://lists.archlinux.org/archives/list/aur-requests@lists.archlinux.org/thread/PZGC6QWQGSD4INVF7X4H2B5Y7XMESV3E/
+
 # https://aur.archlinux.org/packages
 const pkg = ODict{Vector{String}, PackageMeta}(
 	# [depends..., pkgbase]    => (m, s, t, ver-rel),
 	["7-zip-full"]             => (1, 1, 0, "24.09-1"),
 	["apt-zsh-completion"]     => (0, 1, 1, "5.9-1"),
 	["conda-zsh-completion"]   => (0, 1, 0, "0.11-1"),
-	["glibc-linux4"]           => (0, 1, 0, "2.38-1"),
+	["glibc-linux4"]           => (0, 0, 0, "2.38-1"), # [PRQ#75686] XD
 	["iraf-bin"]               => (1, 1, 0, "2.18.1-1"),
 	["libcurl-julia-bin"]      => (1, 1, 0, "1.11-1"),
 	["locale-mul_zz"]          => (0, 1, 0, "2.0-3"),
 	["mingw-w64-zlib", "nsis"] => (1, 1, 0, "3.11-1"),
-	["python310"]              => (1, 1, 1, "3.10.17-1"),
-	["python311"]              => (1, 1, 1, "3.11.12-1"),
-	["python312"]              => (1, 1, 1, "3.12.10-1"),
+	["python310"]              => (0, 1, 1, "3.10.20-1"),
+	["python311"]              => (0, 1, 1, "3.11.15-1"),
+	["python312"]              => (0, 1, 1, "3.12.13-1"),
 	["wine-wow64"]             => (0, 1, 0, "10.8-1"),
 	["wine64"]                 => (1, 0, 0, "10.6-1"),
 	["xgterm-bin"]             => (0, 1, 0, "2.2-1"),
-	["yay"]                    => (1, 1, 0, "12.5.0-1"),
+	["yay"]                    => (1, 1, 0, "12.5.7-1"),
 )
 for (k, v) ∈ pkg
-	v.make && makepkg(k, v.version)
-	v.test && makepkg(k)
+	_ = v.make ? makepkg(k, v.version) :
+		v.test ? makepkg(k) : 0
 end
-syncpkg(sort(reduce(∪, findall(v -> v.sync, pkg))))
+syncpkg(sort!(reduce(∪, findall(v -> v.sync, pkg))))
 
 # https://tracker.debian.org/
 const deb = ODict{String, Vector{String}}(

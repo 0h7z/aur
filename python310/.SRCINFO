@@ -1,6 +1,6 @@
 pkgbase = python310
 	pkgdesc = The Python programming language (version 3.10)
-	pkgver = 3.10.19
+	pkgver = 3.10.20
 	pkgrel = 1
 	url = https://www.python.org/
 	arch = x86_64
@@ -16,9 +16,9 @@ pkgbase = python310
 	options = strip
 	options = !debug
 	options = !lto
-	source = https://www.python.org/ftp/python/3.10.19/Python-3.10.19.tar.xz
+	source = https://www.python.org/ftp/python/3.10.20/Python-3.10.20.tar.xz
 	source = EXTERNALLY-MANAGED
-	sha256sums = c8f4a596572201d81dd7df91f70e177e19a70f1d489968b54b5fbbf29a97c076
+	sha256sums = de6517421601e39a9a3bc3e1bc4c7b2f239297423ee05e282598c83ec0647505
 	sha256sums = d96bca8f7be0d1a83eb88f7c40924434168b1cb8a57870a55ad34207a3718c0a
 
 pkgname = python310
