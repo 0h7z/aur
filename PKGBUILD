@@ -16,8 +16,6 @@ _architectures="i686-w64-mingw32 x86_64-w64-mingw32"
 
 prepare() {
   cd zlib-${pkgver}
-  # keep static libz.a name for now
-  sed -i '/set(zlib_static_suffix "s")/d' CMakeLists.txt
 }
 
 build() {
