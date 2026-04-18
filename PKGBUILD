@@ -16,6 +16,8 @@ _architectures="i686-w64-mingw32 x86_64-w64-mingw32"
 
 prepare() {
   cd zlib-${pkgver}
+  # keep original zlib1.dll runtime name
+  echo 'set_target_properties(zlib PROPERTIES RUNTIME_OUTPUT_NAME zlib1 PREFIX "")' >> CMakeLists.txt
 }
 
 build() {
