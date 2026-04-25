@@ -104,15 +104,14 @@ const ACT_RUN(cmd::SymOrStr, envs::Pair...) = LDict(
 )
 const ACT_RUN(cmd::SymOrStr...) = ACT_RUN.([cmd...])
 const ACT_RUN(cmd::SymOrStr) = LDict(S"run" => cmd)
-const ACT_SYNC(pkgbase::SymOrStr) = LDict(
-	# https://github.com/Heptazhou/github-sync
-	S"uses" => S"heptazhou/github-sync@v2.3.0",
-	S"with" => LDict(
-		:source_repo        => Symbol(URL_AUR),
-		:source_branch      => Symbol(pkgbase),
-		:destination_branch => Symbol(pkgbase),
-		:github_token       => S"${{ secrets.PAT }}",
-	),
+const ACT_SYNC(pkgbase::SymOrStr) = ACT_RUN("""
+	git version
+	git config --global color.ui always
+	git config --global log.date iso
+	git config --global log.decorate short
+	git remote -v
+	git remote add  upstream $URL_AUR.git -t $pkgbase -f
+	git push origin upstream/$pkgbase:$pkgbase -f"""
 )
 const ACT_UPDT(dict::AbstractDict, rel::SymOrStr) = ACT_RUN.(strip("""
 	mkdir .github/packages/$pkg -p
@@ -194,7 +193,13 @@ const JOB_MAKE(pkgbases::Vector{String}) = LDict(
 )
 const JOB_SYNC(pkgbase::String) = LDict(
 	S"runs-on" => S"ubuntu-latest",
-	S"steps"   => [ACT_CHECKOUT(), ACT_SYNC(pkgbase)],
+	S"steps" => [
+		ACT_CHECKOUT(
+			S"persist-credentials" => true,
+			S"token" => S"${{ secrets.PAT }}",
+		)
+		ACT_SYNC(pkgbase)
+	],
 )
 const JOB_UPDT(dict::AbstractDict, rel::SymOrStr) = LDict(
 	S"container" => S"archlinux:base-devel",

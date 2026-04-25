@@ -14,166 +14,208 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: 7-zip-full
-          destination_branch: 7-zip-full
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t 7-zip-full -f
+          git push origin upstream/7-zip-full:7-zip-full -f
   apt-zsh-completion:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: apt-zsh-completion
-          destination_branch: apt-zsh-completion
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t apt-zsh-completion -f
+          git push origin upstream/apt-zsh-completion:apt-zsh-completion -f
   conda-zsh-completion:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: conda-zsh-completion
-          destination_branch: conda-zsh-completion
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t conda-zsh-completion -f
+          git push origin upstream/conda-zsh-completion:conda-zsh-completion -f
   iraf-bin:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: iraf-bin
-          destination_branch: iraf-bin
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t iraf-bin -f
+          git push origin upstream/iraf-bin:iraf-bin -f
   libcurl-julia-bin:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: libcurl-julia-bin
-          destination_branch: libcurl-julia-bin
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t libcurl-julia-bin -f
+          git push origin upstream/libcurl-julia-bin:libcurl-julia-bin -f
   locale-mul_zz:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: locale-mul_zz
-          destination_branch: locale-mul_zz
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t locale-mul_zz -f
+          git push origin upstream/locale-mul_zz:locale-mul_zz -f
   mingw-w64-zlib:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: mingw-w64-zlib
-          destination_branch: mingw-w64-zlib
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t mingw-w64-zlib -f
+          git push origin upstream/mingw-w64-zlib:mingw-w64-zlib -f
   nsis:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: nsis
-          destination_branch: nsis
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t nsis -f
+          git push origin upstream/nsis:nsis -f
   python310:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: python310
-          destination_branch: python310
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t python310 -f
+          git push origin upstream/python310:python310 -f
   python311:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: python311
-          destination_branch: python311
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t python311 -f
+          git push origin upstream/python311:python311 -f
   python312:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: python312
-          destination_branch: python312
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t python312 -f
+          git push origin upstream/python312:python312 -f
   wine-wow64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: wine-wow64
-          destination_branch: wine-wow64
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t wine-wow64 -f
+          git push origin upstream/wine-wow64:wine-wow64 -f
   xgterm-bin:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: xgterm-bin
-          destination_branch: xgterm-bin
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t xgterm-bin -f
+          git push origin upstream/xgterm-bin:xgterm-bin -f
   yay:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-      - uses: heptazhou/github-sync@v2.3.0
-        with:
-          source_repo: https://github.com/archlinux/aur
-          source_branch: yay
-          destination_branch: yay
-          github_token: ${{ secrets.PAT }}
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git -t yay -f
+          git push origin upstream/yay:yay -f
