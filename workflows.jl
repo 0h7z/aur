@@ -33,7 +33,7 @@ const mirror = String[
 ]
 
 const ACT_ARTIFACT(pat::SymOrStr) = LDict(
-	S"uses" => S"actions/upload-artifact@v4",
+	S"uses" => S"actions/upload-artifact@v6",
 	S"with" => LDict(S"compression-level" => 0, S"path" => pat),
 )
 const ACT_CHECKOUT(ref::SymOrStr) = ACT_CHECKOUT(
@@ -41,7 +41,7 @@ const ACT_CHECKOUT(ref::SymOrStr) = ACT_CHECKOUT(
 	S"ref"  => Symbol(ref),
 )
 const ACT_CHECKOUT(xs::Pair...) = LDict(
-	S"uses" => S"actions/checkout@v4",
+	S"uses" => S"actions/checkout@v5",
 	S"with" => ODict(S"persist-credentials" => false, xs...),
 )
 const ACT_GH(cmd::SymOrStr, envs::Pair...) = ACT_RUN(

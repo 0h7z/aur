@@ -12,7 +12,7 @@ jobs:
   _7-zip-full:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -27,7 +27,7 @@ jobs:
   apt-zsh-completion:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -42,7 +42,7 @@ jobs:
   conda-zsh-completion:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -57,7 +57,7 @@ jobs:
   iraf-bin:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -72,7 +72,7 @@ jobs:
   libcurl-julia-bin:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -87,7 +87,7 @@ jobs:
   locale-mul_zz:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -102,7 +102,7 @@ jobs:
   mingw-w64-zlib:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -117,7 +117,7 @@ jobs:
   nsis:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -132,7 +132,7 @@ jobs:
   python310:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -147,7 +147,7 @@ jobs:
   python311:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -162,7 +162,7 @@ jobs:
   python312:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -177,7 +177,7 @@ jobs:
   wine-wow64:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -192,7 +192,7 @@ jobs:
   xgterm-bin:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -207,7 +207,7 @@ jobs:
   yay:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}

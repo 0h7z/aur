@@ -34,7 +34,7 @@ jobs:
           sed -r 's/\b(EUID)\s*==\s*0\b/\1 < -0/' -i /bin/makepkg
           makepkg --version
       - run: pacman -S --noconfirm apt debian-archive-keyring jq openssh
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}

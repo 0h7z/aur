@@ -32,7 +32,7 @@ jobs:
           sed -r 's/\b(EUID)\s*==\s*0\b/\1 < -0/' -i /bin/makepkg
           makepkg --version
       - run: pacman -S --noconfirm jq openssh
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
@@ -69,7 +69,7 @@ jobs:
           makepkg -si --noconfirm
           mv -vt .. *.pkg.tar.zst
       - run: ls -lav *.pkg.tar.zst
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           compression-level: 0
           path: "*.pkg.tar.zst"
