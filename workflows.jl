@@ -21,7 +21,7 @@ const NAME, MAIL = "Seele", "seele@0h7z.com"
 const PACKAGER = "$NAME <$MAIL>"
 const PUSH_NOP = "Everything up-to-date"
 const PUSH_REJ = "error: failed to push some refs to"
-const URL_AUR = "https://aur.archlinux.org"
+const URL_AUR = "https://github.com/archlinux/aur" # https://aur.archlinux.org
 const URL_DEB = "https://deb.debian.org/debian"
 
 const cquote(s::SymOrStr)::String = "\$'$(escape(s, "'"))'"
@@ -108,8 +108,8 @@ const ACT_SYNC(pkgbase::SymOrStr) = LDict(
 	# https://github.com/Heptazhou/github-sync
 	S"uses" => S"heptazhou/github-sync@v2.3.0",
 	S"with" => LDict(
-		:source_repo        => Symbol("$URL_AUR/$pkgbase.git"),
-		:source_branch      => S"master",
+		:source_repo        => Symbol(URL_AUR),
+		:source_branch      => Symbol(pkgbase),
 		:destination_branch => Symbol(pkgbase),
 		:github_token       => S"${{ secrets.PAT }}",
 	),

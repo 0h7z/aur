@@ -17,8 +17,8 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/7-zip-full.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: 7-zip-full
           destination_branch: 7-zip-full
           github_token: ${{ secrets.PAT }}
   apt-zsh-completion:
@@ -29,8 +29,8 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/apt-zsh-completion.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: apt-zsh-completion
           destination_branch: apt-zsh-completion
           github_token: ${{ secrets.PAT }}
   conda-zsh-completion:
@@ -41,8 +41,8 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/conda-zsh-completion.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: conda-zsh-completion
           destination_branch: conda-zsh-completion
           github_token: ${{ secrets.PAT }}
   iraf-bin:
@@ -53,8 +53,8 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/iraf-bin.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: iraf-bin
           destination_branch: iraf-bin
           github_token: ${{ secrets.PAT }}
   libcurl-julia-bin:
@@ -65,8 +65,8 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/libcurl-julia-bin.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: libcurl-julia-bin
           destination_branch: libcurl-julia-bin
           github_token: ${{ secrets.PAT }}
   locale-mul_zz:
@@ -77,8 +77,8 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/locale-mul_zz.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: locale-mul_zz
           destination_branch: locale-mul_zz
           github_token: ${{ secrets.PAT }}
   mingw-w64-zlib:
@@ -89,8 +89,8 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/mingw-w64-zlib.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: mingw-w64-zlib
           destination_branch: mingw-w64-zlib
           github_token: ${{ secrets.PAT }}
   nsis:
@@ -101,8 +101,8 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/nsis.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: nsis
           destination_branch: nsis
           github_token: ${{ secrets.PAT }}
   python310:
@@ -113,8 +113,8 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/python310.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: python310
           destination_branch: python310
           github_token: ${{ secrets.PAT }}
   python311:
@@ -125,8 +125,8 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/python311.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: python311
           destination_branch: python311
           github_token: ${{ secrets.PAT }}
   python312:
@@ -137,8 +137,8 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/python312.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: python312
           destination_branch: python312
           github_token: ${{ secrets.PAT }}
   wine-wow64:
@@ -149,8 +149,8 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/wine-wow64.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: wine-wow64
           destination_branch: wine-wow64
           github_token: ${{ secrets.PAT }}
   xgterm-bin:
@@ -161,8 +161,8 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/xgterm-bin.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: xgterm-bin
           destination_branch: xgterm-bin
           github_token: ${{ secrets.PAT }}
   yay:
@@ -173,7 +173,7 @@ jobs:
           persist-credentials: false
       - uses: heptazhou/github-sync@v2.3.0
         with:
-          source_repo: https://aur.archlinux.org/yay.git
-          source_branch: master
+          source_repo: https://github.com/archlinux/aur
+          source_branch: yay
           destination_branch: yay
           github_token: ${{ secrets.PAT }}
