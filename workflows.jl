@@ -28,8 +28,10 @@ const cquote(s::SymOrStr)::String = "\$'$(escape(s, "'"))'"
 const escape(s::SymOrStr, xs...; kw...) = escape_string(s, xs...; kw...)
 const escape(sym::Symbol, xs...; kw...) = escape(string(sym), xs...; kw...)
 const mirror = String[
-	raw"https://mirrors.dotsrc.org/archlinux/$repo/os/$arch"
-	raw"https://mirrors.kernel.org/archlinux/$repo/os/$arch"
+	raw"https://mirror.alwyzon.net/archlinux/$repo/os/$arch" # AT # https://archlinux.org/mirrors/alwyzon.net/
+	raw"https://mirror.freedif.org/archlinux/$repo/os/$arch" # SG # https://archlinux.org/mirrors/freedif.org/
+	raw"https://mirrors.dotsrc.org/archlinux/$repo/os/$arch" # DK # https://archlinux.org/mirrors/dotsrc.org/
+	raw"https://mirrors.kernel.org/archlinux/$repo/os/$arch" # US # https://archlinux.org/mirrors/kernel.org/
 ]
 
 const ACT_ARTIFACT(pat::SymOrStr) = LDict(
@@ -54,12 +56,14 @@ const ACT_INIT(cmd::SymOrStr, envs::Pair...) = ACT_RUN("""
 	mkdir ~/.ssh -p && cd /etc/pacman.d
 	echo -e 'Server = $(mirror[1])' >> mirrorlist
 	echo -e 'Server = $(mirror[2])' >> mirrorlist
+	echo -e 'Server = $(mirror[3])' >> mirrorlist
 	tac mirrorlist > mirrorlist~ && mv mirrorlist{~,} && cd /etc
 	sed -r 's/^(COMPRESSZST)=.*/\\1=($COMPRESS)/' -i makepkg.conf
 	sed -r 's/^#(MAKEFLAGS)=.*/\\1="-j`nproc`"/' -i makepkg.conf
 	sed -r 's/^#(PACKAGER)=.*/\\1="$PACKAGER"/' -i makepkg.conf
+	sed -r 's/^#(Color|VerbosePkgLists)\$/\\1/' -i pacman.conf
 	pacman-key --init""", """
-	pacman -Syu --noconfirm git pacman-contrib
+	pacman -Syu --color always --noconfirm git pacman-contrib
 	git config --global color.ui always
 	git config --global init.defaultbranch master
 	git config --global log.date iso
@@ -70,7 +74,7 @@ const ACT_INIT(cmd::SymOrStr, envs::Pair...) = ACT_RUN("""
 	makepkg --version""", cmd, envs...,
 )
 const ACT_INIT(pkg::Vector{String}) = ACT_INIT(
-	Symbol(join(["pacman -S --noconfirm"; pkg], " ")),
+	Symbol(join(["pacman -Syy --color always --noconfirm"; pkg], " ")),
 )
 const ACT_PUSH(msg::SymOrStr...; m = cquote(join(msg, "\n"))) = ACT_RUN("""
 	git version
@@ -322,7 +326,7 @@ Base.convert(::Type{PackageMeta}, xs::Tuple) = PackageMeta(xs...)
 # https://aur.archlinux.org/packages
 const pkg = ODict{Vector{String}, PackageMeta}(
 	# [depends..., pkgbase]    => (m, s, t, ver-rel),
-	["7-zip-full"]             => (1, 1, 0, "24.09-1"),
+	["7-zip-full"]             => (0, 0, 0, "24.09-1"), # https://archlinux.org/packages/extra/x86_64/7zip/
 	["apt-zsh-completion"]     => (0, 1, 1, "5.9-1"),
 	["conda-zsh-completion"]   => (0, 1, 0, "0.11-1"),
 	["glibc-linux4"]           => (0, 0, 0, "2.38-1"), # [PRQ#75686] XD
@@ -333,8 +337,8 @@ const pkg = ODict{Vector{String}, PackageMeta}(
 	["python310"]              => (0, 1, 1, "3.10.20-1"),
 	["python311"]              => (0, 1, 1, "3.11.15-1"),
 	["python312"]              => (0, 1, 1, "3.12.13-1"),
-	["wine-wow64"]             => (0, 1, 0, "10.8-1"),
-	["wine64"]                 => (1, 0, 0, "10.6-1"),
+	["wine-wow64"]             => (0, 0, 0, "10.10-1"), # https://archlinux.org/packages/extra/x86_64/wine/
+	["wine64"]                 => (0, 0, 0, "10.6-1"),
 	["xgterm-bin"]             => (0, 1, 0, "2.2-1"),
 	["yay"]                    => (1, 1, 0, "12.5.7-1"),
 )

@@ -9,21 +9,6 @@ on:
     - cron: "0 */4 * * *"
 
 jobs:
-  _7-zip-full:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: true
-          token: ${{ secrets.PAT }}
-      - run: |-
-          git version
-          git config --global color.ui always
-          git config --global log.date iso
-          git config --global log.decorate short
-          git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t 7-zip-full -f
-          git push origin upstream/7-zip-full:7-zip-full -f
   apt-zsh-completion:
     runs-on: ubuntu-latest
     steps:
@@ -174,21 +159,6 @@ jobs:
           git remote -v
           git remote add  upstream https://github.com/archlinux/aur.git -t python312 -f
           git push origin upstream/python312:python312 -f
-  wine-wow64:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: true
-          token: ${{ secrets.PAT }}
-      - run: |-
-          git version
-          git config --global color.ui always
-          git config --global log.date iso
-          git config --global log.decorate short
-          git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t wine-wow64 -f
-          git push origin upstream/wine-wow64:wine-wow64 -f
   xgterm-bin:
     runs-on: ubuntu-latest
     steps:

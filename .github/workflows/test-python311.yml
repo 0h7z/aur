@@ -14,15 +14,17 @@ jobs:
       - run: |-
           uname -a
           mkdir ~/.ssh -p && cd /etc/pacman.d
+          echo -e 'Server = https://mirror.alwyzon.net/archlinux/$repo/os/$arch' >> mirrorlist
+          echo -e 'Server = https://mirror.freedif.org/archlinux/$repo/os/$arch' >> mirrorlist
           echo -e 'Server = https://mirrors.dotsrc.org/archlinux/$repo/os/$arch' >> mirrorlist
-          echo -e 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >> mirrorlist
           tac mirrorlist > mirrorlist~ && mv mirrorlist{~,} && cd /etc
           sed -r 's/^(COMPRESSZST)=.*/\1=(zstdmt -18 -M1024M --long)/' -i makepkg.conf
           sed -r 's/^#(MAKEFLAGS)=.*/\1="-j`nproc`"/' -i makepkg.conf
           sed -r 's/^#(PACKAGER)=.*/\1="Seele <seele@0h7z.com>"/' -i makepkg.conf
+          sed -r 's/^#(Color|VerbosePkgLists)$/\1/' -i pacman.conf
           pacman-key --init
       - run: |-
-          pacman -Syu --noconfirm git pacman-contrib
+          pacman -Syu --color always --noconfirm git pacman-contrib
           git config --global color.ui always
           git config --global init.defaultbranch master
           git config --global log.date iso
@@ -31,7 +33,7 @@ jobs:
           git config --global safe.directory "*"
           sed -r 's/\b(EUID)\s*==\s*0\b/\1 < -0/' -i /bin/makepkg
           makepkg --version
-      - run: pacman -S --noconfirm jq openssh
+      - run: pacman -Syy --color always --noconfirm jq openssh
       - uses: actions/checkout@v5
         with:
           persist-credentials: true
