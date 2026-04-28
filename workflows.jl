@@ -325,23 +325,24 @@ Base.convert(::Type{PackageMeta}, xs::Tuple) = PackageMeta(xs...)
 
 # https://aur.archlinux.org/packages
 const pkg = ODict{Vector{String}, PackageMeta}(
-	# [depends..., pkgbase]    => (m, s, t, ver-rel),
-	["7-zip-full"]             => (0, 0, 0, "24.09-1"), # https://archlinux.org/packages/extra/x86_64/7zip/
-	["apt-zsh-completion"]     => (0, 1, 1, "5.9-1"),
-	["conda-zsh-completion"]   => (0, 1, 0, "0.11-1"),
-	["glibc-linux4"]           => (0, 0, 0, "2.38-1"), # [PRQ#75686] XD
-	["iraf-bin"]               => (1, 1, 0, "2.18.1-1"),
-	["libcurl-julia-bin"]      => (1, 1, 0, "1.11-1"),
-	["locale-mul_zz"]          => (0, 1, 0, "2.0-3"),
-	["mingw-w64-zlib-gcc"]     => (0, 0, 1, "1.3.2-1"),
-	["mingw-w64-zlib", "nsis"] => (1, 1, 0, "3.11-1"),
-	["python310"]              => (0, 1, 1, "3.10.20-1"),
-	["python311"]              => (0, 1, 1, "3.11.15-1"),
-	["python312"]              => (0, 1, 1, "3.12.13-1"),
-	["wine-wow64"]             => (0, 0, 0, "10.10-1"), # https://archlinux.org/packages/extra/x86_64/wine/
-	["wine64"]                 => (0, 0, 0, "10.6-1"),
-	["xgterm-bin"]             => (0, 1, 0, "2.2-1"),
-	["yay"]                    => (1, 1, 0, "12.5.7-1"),
+	# [depends..., pkgbase]        => (m, s, t, ver-rel),
+	["7-zip-full"]                 => (0, 0, 0, "24.09-1"), # https://archlinux.org/packages/extra/x86_64/7zip/
+	["apt-zsh-completion"]         => (0, 1, 1, "5.9-1"),
+	["conda-zsh-completion"]       => (0, 1, 0, "0.11-1"),
+	["glibc-linux4"]               => (0, 0, 0, "2.38-1"), # [PRQ#75686] XD
+	["iraf-bin"]                   => (1, 1, 0, "2.18.1-1"),
+	["libcurl-julia-bin"]          => (1, 1, 0, "1.11-1"),
+	["locale-mul_zz"]              => (0, 1, 0, "2.0-3"),
+	["mingw-w64-zlib-gcc", "nsis"] => (0, 0, 0, "3.12-1"),
+	["mingw-w64-zlib-gcc"]         => (0, 0, 1, "1.3.2-1"),
+	["mingw-w64-zlib", "nsis"]     => (0, 1, 0, "3.11-1"),
+	["python310"]                  => (0, 1, 1, "3.10.20-1"),
+	["python311"]                  => (0, 1, 1, "3.11.15-1"),
+	["python312"]                  => (0, 1, 1, "3.12.13-1"),
+	["wine-wow64"]                 => (0, 0, 0, "10.10-1"), # https://archlinux.org/packages/extra/x86_64/wine/
+	["wine64"]                     => (0, 0, 0, "10.6-1"),
+	["xgterm-bin"]                 => (0, 1, 0, "2.2-1"),
+	["yay"]                        => (1, 1, 0, "12.5.7-1"),
 )
 for (k, v) ∈ pkg
 	_ = v.make ? makepkg(k, v.version) :
