@@ -1,0 +1,77 @@
+on:
+  workflow_dispatch: ~
+  push:
+    branches:
+      - "master"
+    paths:
+      - "mingw-w64-zlib-gcc/**"
+
+jobs:
+  makepkg:
+    container: archlinux:base-devel
+    runs-on: ubuntu-latest
+    steps:
+      - run: |-
+          uname -a
+          mkdir ~/.ssh -p && cd /etc/pacman.d
+          echo -e 'Server = https://mirror.alwyzon.net/archlinux/$repo/os/$arch' >> mirrorlist
+          echo -e 'Server = https://mirror.freedif.org/archlinux/$repo/os/$arch' >> mirrorlist
+          echo -e 'Server = https://mirrors.dotsrc.org/archlinux/$repo/os/$arch' >> mirrorlist
+          tac mirrorlist > mirrorlist~ && mv mirrorlist{~,} && cd /etc
+          sed -r 's/^(COMPRESSZST)=.*/\1=(zstdmt -18 -M1024M --long)/' -i makepkg.conf
+          sed -r 's/^#(MAKEFLAGS)=.*/\1="-j`nproc`"/' -i makepkg.conf
+          sed -r 's/^#(PACKAGER)=.*/\1="Seele <seele@0h7z.com>"/' -i makepkg.conf
+          sed -r 's/^#(Color|VerbosePkgLists)$/\1/' -i pacman.conf
+          pacman-key --init
+      - run: |-
+          pacman -Syu --color always --noconfirm git pacman-contrib
+          git config --global color.ui always
+          git config --global init.defaultbranch master
+          git config --global log.date iso
+          git config --global log.decorate short
+          git config --global pull.rebase true
+          git config --global safe.directory "*"
+          sed -r 's/\b(EUID)\s*==\s*0\b/\1 < -0/' -i /bin/makepkg
+          makepkg --version
+      - run: pacman -Syy --color always --noconfirm jq openssh
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: "patch -d / -lp1  < makepkg.patch"
+      - run: |-
+          cd mingw-w64-zlib-gcc
+          updpkgsums
+          makepkg --printsrcinfo > .SRCINFO
+          git diff --patch-with-stat -w .
+      - run: |-
+          git version
+          git config --global commit.gpgsign true
+          git config --global gpg.format ssh
+          git config --global user.email seele@0h7z.com
+          git config --global user.name  Seele
+          git config --global user.signingkey ~/.ssh/id_ecdsa.pub
+          echo '${{ secrets.SSH_PUB }}'    > ~/.ssh/id_ecdsa.pub
+          echo '${{ secrets.SSH_KEY }}'    > ~/.ssh/id_ecdsa
+          chmod 400 ~/.ssh/id*
+          git add --all && git commit --allow-empty-message -m $'Update mingw-w64-zlib-gcc\n[skip ci]' || true
+          i=1; while true; do ((i++ < 05)) || exit 1
+          git pull -ftp && git push |& tee /tmp/push
+          grep $'error: failed to push some refs to' /tmp/push -aw || break; sleep $i; done
+          git rev-parse HEAD | tee /tmp/head
+          sha=`cat /tmp/head` u=${{ github.api_url }}/repos/${{ github.repository }}/commits/$sha/comments
+          grep $'Everything up-to-date' /tmp/push -ax && exit
+          echo @Heptazhou > /tmp/md
+          echo '```s'    >> /tmp/md && git show --stat -w | tee -a /tmp/md
+          echo '```'     >> /tmp/md && sed 's/\x1b\[[0-9;]*m//g' /tmp/md | jq -Rs $'{ body: . }' > /tmp/md.json
+          echo $u && curl -LX POST -H 'Authorization: token ${{ secrets.PAT }}' -d @/tmp/md.json $u | jq -Cr .html_url
+      - run: |-
+          cd mingw-w64-zlib-gcc
+          git rev-parse HEAD | tee ../head
+          makepkg -si --noconfirm
+          mv -vt .. *.pkg.tar.zst
+      - run: ls -lav *.pkg.tar.zst
+      - uses: actions/upload-artifact@v6
+        with:
+          compression-level: 0
+          path: "*.pkg.tar.zst"

@@ -333,6 +333,7 @@ const pkg = ODict{Vector{String}, PackageMeta}(
 	["iraf-bin"]               => (1, 1, 0, "2.18.1-1"),
 	["libcurl-julia-bin"]      => (1, 1, 0, "1.11-1"),
 	["locale-mul_zz"]          => (0, 1, 0, "2.0-3"),
+	["mingw-w64-zlib-gcc"]     => (0, 0, 1, "1.3.2-1"),
 	["mingw-w64-zlib", "nsis"] => (1, 1, 0, "3.11-1"),
 	["python310"]              => (0, 1, 1, "3.10.20-1"),
 	["python311"]              => (0, 1, 1, "3.11.15-1"),
