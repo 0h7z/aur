@@ -5,15 +5,16 @@ pkgbase = mingw-w64-zlib
 	url = https://www.zlib.net/
 	arch = any
 	license = Zlib
-	makedepends = mingw-w64-cmake
+	makedepends = mingw-w64-gcc
 	depends = mingw-w64-crt
+	provides = mingw-w64-zlib=1.4
+	conflicts = mingw-w64-zlib
+	replaces = mingw-w64-zlib-cmake
 	options = !strip
 	options = !buildflags
 	options = staticlibs
 	source = https://github.com/madler/zlib/releases/download/v1.4/zlib-1.4.tar.xz
-	source = https://github.com/madler/zlib/releases/download/v1.4/zlib-1.4.tar.xz.asc
 	validpgpkeys = 5ED46A6721D365587791E2AA783FCD8E58BCAFBA
 	sha256sums = 4f11c512053d7bab8d9e9b89bde3575add3e4c50a383b42ef6cb837035fc5a7c
-	sha256sums = SKIP
 
-pkgname = mingw-w64-zlib
+pkgname = mingw-w64-zlib-make
