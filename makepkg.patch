@@ -1,8 +1,9 @@
  scripts/libmakepkg/integrity/generate_checksum.sh.in | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ scripts/makepkg.sh.in                                | 6 +++---
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/scripts/libmakepkg/integrity/generate_checksum.sh.in b/scripts/libmakepkg/integrity/generate_checksum.sh.in
-index 9919d1a3..9e4376ab 100644
+index dee81399..672cfae7 100644
 --- a/usr/share/makepkg/integrity/generate_checksum.sh
 +++ b/usr/share/makepkg/integrity/generate_checksum.sh
 @@ -78,11 +78,13 @@ generate_one_checksum() {
@@ -21,3 +22,33 @@ index 9919d1a3..9e4376ab 100644
  	done
  
  	echo ")"
+diff --git a/scripts/makepkg.sh.in b/scripts/makepkg.sh.in
+index 611cc184..556f26e4 100644
+--- a/usr/bin/makepkg
++++ b/usr/bin/makepkg
+@@ -1282,7 +1282,7 @@ if { [[ -z $SIGNPKG ]] && check_buildenv "sign" "y"; } || [[ $SIGNPKG == 'y' ]];
+ 	fi
+ fi
+ 
+-msg "$(gettext "Making package: %s")" "$pkgbase $basever ($(date +%c))"
++msg "$(gettext "Making package: %s")" "$pkgbase $basever ($(date +"%F %T %Z"))"
+ 
+ # if we are creating a source-only package, go no further
+ if (( SOURCEONLY )); then
+@@ -1312,7 +1312,7 @@ if (( SOURCEONLY )); then
+ 		create_signature "$SRCPKGDEST/${pkgbase}-$(get_full_version)${SRCEXT}"
+ 	fi
+ 
+-	msg "$(gettext "Source package created: %s")" "$pkgbase ($(date +%c))"
++	msg "$(gettext "Source package created: %s")" "$pkgbase ($(date +"%F %T %Z"))"
+ 	exit $E_OK
+ fi
+ 
+@@ -1422,6 +1422,6 @@ if (( NOARCHIVE )); then
+ 	exit $E_OK
+ fi
+ 
+-msg "$(gettext "Finished making: %s")" "$pkgbase $basever ($(date +%c))"
++msg "$(gettext "Finished making: %s")" "$pkgbase $basever ($(date +"%F %T %Z"))"
+ 
+ install_package && exit $E_OK || exit $E_INSTALL_FAILED
