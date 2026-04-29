@@ -55,7 +55,7 @@ jobs:
           echo '${{ secrets.SSH_KEY }}'    > ~/.ssh/id_ecdsa
           chmod 400 ~/.ssh/id*
           git add --all && git commit --allow-empty-message -m $'Update mingw-w64-zlib-gcc\n[skip ci]' || true
-          i=1; while true; do ((i++ < 05)) || exit 1
+          git fetch -qt; i=1; while true; do ((i++ < 05)) || exit 1
           git pull -ftp && git push |& tee /tmp/push
           grep $'error: failed to push some refs to' /tmp/push -aw || break; sleep $i; done
           git rev-parse HEAD | tee /tmp/head

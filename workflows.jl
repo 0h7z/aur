@@ -87,7 +87,7 @@ const ACT_PUSH(msg::SymOrStr...; m = cquote(join(msg, "\n"))) = ACT_RUN("""
 	echo '\${{ secrets.SSH_KEY }}'    > ~/.ssh/id_ecdsa
 	chmod 400 ~/.ssh/id*
 	git add --all && git commit --allow-empty-message -m $m || true
-	i=1; while true; do ((i++ < 05)) || exit 1
+	git fetch -qt; i=1; while true; do ((i++ < 05)) || exit 1
 	git pull -ftp && git push |& tee /tmp/push
 	grep $(cquote(PUSH_REJ)) /tmp/push -aw || break; sleep \$i; done
 	git rev-parse HEAD | tee /tmp/head
@@ -332,7 +332,7 @@ const pkg = ODict{Vector{String}, PackageMeta}(
 	["iraf-bin"]                   => (1, 1, 0, "2.18.1-1"),
 	["libcurl-julia-bin"]          => (1, 1, 0, "1.11-1"),
 	["locale-mul_zz"]              => (0, 1, 0, "2.0-3"),
-	["mingw-w64-zlib-gcc", "nsis"] => (0, 0, 0, "3.12-1"),
+	["mingw-w64-zlib-gcc", "nsis"] => (1, 0, 0, "3.12-1"),
 	["mingw-w64-zlib-gcc"]         => (0, 0, 1, "1.3.2-1"),
 	["python310"]                  => (0, 1, 1, "3.10.20-1"),
 	["python311"]                  => (0, 1, 1, "3.11.15-1"),
