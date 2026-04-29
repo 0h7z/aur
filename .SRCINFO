@@ -1,4 +1,4 @@
-pkgbase = mingw-w64-zlib
+pkgbase = mingw-w64-zlib-gcc
 	pkgdesc = Compression library implementing the deflate compression method found in gzip and PKZIP (mingw-w64)
 	pkgver = 1.3.2
 	pkgrel = 1
@@ -7,6 +7,8 @@ pkgbase = mingw-w64-zlib
 	license = Zlib
 	makedepends = mingw-w64-gcc
 	depends = mingw-w64-crt
+	provides = mingw-w64-zlib=1.3.2
+	conflicts = mingw-w64-zlib
 	options = !strip
 	options = !buildflags
 	options = staticlibs
@@ -14,4 +16,4 @@ pkgbase = mingw-w64-zlib
 	validpgpkeys = 5ED46A6721D365587791E2AA783FCD8E58BCAFBA
 	sha256sums = d7a0654783a4da529d1bb793b7ad9c3318020af77667bcae35f95d0e42a792f3
 
-pkgname = mingw-w64-zlib
+pkgname = mingw-w64-zlib-gcc

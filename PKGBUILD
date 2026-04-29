@@ -1,9 +1,12 @@
-pkgname=mingw-w64-zlib
+pkgname_=mingw-w64-zlib
+pkgname=$pkgname_-gcc
 pkgver=1.3.2
 pkgrel=1
 pkgdesc="Compression library implementing the deflate compression method found in gzip and PKZIP (mingw-w64)"
 arch=("any")
 license=(Zlib)
+provides=("$pkgname_=$pkgver")
+conflicts=("$pkgname_")
 depends=(mingw-w64-crt)
 makedepends=(mingw-w64-gcc)
 url="https://www.zlib.net/"
