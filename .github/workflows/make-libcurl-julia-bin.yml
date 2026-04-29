@@ -39,6 +39,8 @@ jobs:
           persist-credentials: false
           path: libcurl-julia-bin
           ref: libcurl-julia-bin
+      - run: curl -LO https://github.com/0h7z/aur/raw/master/makepkg.patch
+      - run: patch -d / -lp1 < makepkg.patch
       - run: |-
           cd libcurl-julia-bin
           git rev-parse HEAD | tee ../head

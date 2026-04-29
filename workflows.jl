@@ -144,6 +144,8 @@ const JOB_MAKE(pkgbases::Vector{String}, tag::SymOrStr) = LDict(
 		ACT_INIT(["github-cli"])
 		ACT_CHECKOUT.(sort(pkgbases))
 		ACT_RUN.([
+			S"curl -LO https://github.com/0h7z/aur/raw/master/makepkg.patch"
+			S"patch -d / -lp1 < makepkg.patch"
 			map(pkgbase -> strip("""
 			cd $pkgbase
 			git rev-parse HEAD | tee ../head
@@ -171,17 +173,15 @@ const JOB_MAKE(pkgbases::Vector{String}) = LDict(
 			S"persist-credentials" => true,
 			S"token" => S"${{ secrets.PAT }}",
 		)
-		ACT_RUN("""
-			patch -d / -lp1  < makepkg.patch"""
-		)
-		ACT_RUN.(
+		ACT_RUN.([
+			S"patch -d / -lp1 < makepkg.patch"
 			map(pkgbase -> strip("""
 			cd $pkgbase
 			updpkgsums
 			makepkg --printsrcinfo > .SRCINFO
 			git diff --patch-with-stat -w .
-			"""), pkgbases),
-		)
+			"""), pkgbases)
+		])
 		ACT_PUSH("Update $(pkgbases[end])", "[skip ci]")
 		ACT_RUN.([
 			map(pkgbase -> strip("""
@@ -216,10 +216,10 @@ const JOB_UPDT(dict::AbstractDict, rel::SymOrStr) = LDict(
 		)
 		ACT_RUN("""
 			patch -d / -lp1  < makepkg.patch
-			sed  's/Retries "0"/Retries "3"/' -i /etc/apt/apt.conf
 			echo 'deb $URL_DEB unstable main' >> /etc/apt/sources.list
 			echo 'deb $URL_DEB testing  main' >> /etc/apt/sources.list
 			echo 'deb $URL_DEB stable   main' >> /etc/apt/sources.list
+			sed  's/Retries "0"/Retries "3"/' -i /etc/apt/apt.conf
 			apt update 2> /dev/null"""
 		)
 		ACT_UPDT(dict, rel)

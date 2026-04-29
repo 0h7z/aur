@@ -42,10 +42,10 @@ jobs:
           token: ${{ secrets.PAT }}
       - run: |-
           patch -d / -lp1  < makepkg.patch
-          sed  's/Retries "0"/Retries "3"/' -i /etc/apt/apt.conf
           echo 'deb https://deb.debian.org/debian unstable main' >> /etc/apt/sources.list
           echo 'deb https://deb.debian.org/debian testing  main' >> /etc/apt/sources.list
           echo 'deb https://deb.debian.org/debian stable   main' >> /etc/apt/sources.list
+          sed  's/Retries "0"/Retries "3"/' -i /etc/apt/apt.conf
           apt update 2> /dev/null
       - run: |-
           mkdir .github/packages/iraf-bin -p

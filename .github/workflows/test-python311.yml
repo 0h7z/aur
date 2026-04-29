@@ -38,7 +38,7 @@ jobs:
         with:
           persist-credentials: true
           token: ${{ secrets.PAT }}
-      - run: "patch -d / -lp1  < makepkg.patch"
+      - run: patch -d / -lp1 < makepkg.patch
       - run: |-
           cd python311
           updpkgsums
