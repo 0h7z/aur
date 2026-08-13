@@ -7,7 +7,7 @@
 # Contributor: Felix Yan <felixonmars@archlinux.org>
 
 pkgname=python310
-pkgver=3.10.20
+pkgver=3.10.21
 pkgrel=1
 _pybasever=${pkgver%.*}
 pkgdesc="The Python programming language (version 3.10)"
