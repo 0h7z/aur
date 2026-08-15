@@ -360,3 +360,11 @@ const deb = ODict{String, Vector{String}}(
 )
 updtpkg(deb, "sid")
 
+for p ∈ filter!(isdir, readdir())
+	q = "../AUR.$p"
+	isdir("$q/.git") ? @info(p => q) : continue
+	for f ∈ readdir(p)
+		cp("$p/$f", "$q/$f", force = true)
+	end
+end
+
