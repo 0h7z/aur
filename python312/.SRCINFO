@@ -1,6 +1,6 @@
 pkgbase = python312
 	pkgdesc = The Python programming language (version 3.12)
-	pkgver = 3.12.14
+	pkgver = 3.12.16
 	pkgrel = 1
 	url = https://www.python.org/
 	arch = x86_64
@@ -16,9 +16,9 @@ pkgbase = python312
 	options = strip
 	options = !debug
 	options = !lto
-	source = https://www.python.org/ftp/python/3.12.14/Python-3.12.14.tar.xz
+	source = https://www.python.org/ftp/python/3.12.16/Python-3.12.16.tar.xz
 	source = EXTERNALLY-MANAGED
-	sha256sums = 5c8462af5790baf43a321a1559dbe0db06d1be4300fb85fb53c40060668e548a
+	sha256sums = b5796915dc45ff745cfb4e990a7e7c93d6f546328a102ce31448d69ebc37575c
 	sha256sums = d96bca8f7be0d1a83eb88f7c40924434168b1cb8a57870a55ad34207a3718c0a
 
 pkgname = python312
