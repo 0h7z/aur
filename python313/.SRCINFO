@@ -1,6 +1,6 @@
 pkgbase = python313
 	pkgdesc = The Python programming language (version 3.13)
-	pkgver = 3.13.9
+	pkgver = 3.13.18
 	pkgrel = 1
 	url = https://www.python.org/
 	arch = x86_64
@@ -17,10 +17,10 @@ pkgbase = python313
 	options = strip
 	options = !debug
 	options = !lto
-	source = https://www.python.org/ftp/python/3.13.9/Python-3.13.9.tar.xz
+	source = https://www.python.org/ftp/python/3.13.18/Python-3.13.18.tar.xz
 	source = EXTERNALLY-MANAGED
 	source = 144310.patch
-	sha256sums = ed5ef34cda36cfa2f3a340f07cac7e7814f91c7f3c411f6d3562323a866c5c66
+	sha256sums = abb0102e6d4ae027509bcb82327d9dd85515b44a3ba8ad538cfc5e9847029f68
 	sha256sums = d96bca8f7be0d1a83eb88f7c40924434168b1cb8a57870a55ad34207a3718c0a
 	sha256sums = 68f036a167a8087dad8f252726acd6ac78ead45980a070e6d45ef079af83d448
 
