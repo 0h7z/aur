@@ -7,7 +7,7 @@
 # Contributor: Felix Yan <felixonmars@archlinux.org>
 
 pkgname=python313
-pkgver=3.13.9
+pkgver=3.13.18
 pkgrel=1
 _pybasever=${pkgver%.*}
 pkgdesc="The Python programming language (version $_pybasever)"
