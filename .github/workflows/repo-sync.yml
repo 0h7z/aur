@@ -22,8 +22,8 @@ jobs:
           git config --global log.date iso
           git config --global log.decorate short
           git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t apt-zsh-completion -f
-          git push origin upstream/apt-zsh-completion:apt-zsh-completion -f
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t apt-zsh-completion
+          git push origin upstream/apt-zsh-completion:refs/heads/apt-zsh-completion -f
   conda-zsh-completion:
     runs-on: ubuntu-latest
     steps:
@@ -37,8 +37,8 @@ jobs:
           git config --global log.date iso
           git config --global log.decorate short
           git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t conda-zsh-completion -f
-          git push origin upstream/conda-zsh-completion:conda-zsh-completion -f
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t conda-zsh-completion
+          git push origin upstream/conda-zsh-completion:refs/heads/conda-zsh-completion -f
   iraf-bin:
     runs-on: ubuntu-latest
     steps:
@@ -52,8 +52,8 @@ jobs:
           git config --global log.date iso
           git config --global log.decorate short
           git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t iraf-bin -f
-          git push origin upstream/iraf-bin:iraf-bin -f
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t iraf-bin
+          git push origin upstream/iraf-bin:refs/heads/iraf-bin -f
   libcurl-julia-bin:
     runs-on: ubuntu-latest
     steps:
@@ -67,8 +67,8 @@ jobs:
           git config --global log.date iso
           git config --global log.decorate short
           git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t libcurl-julia-bin -f
-          git push origin upstream/libcurl-julia-bin:libcurl-julia-bin -f
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t libcurl-julia-bin
+          git push origin upstream/libcurl-julia-bin:refs/heads/libcurl-julia-bin -f
   locale-mul_zz:
     runs-on: ubuntu-latest
     steps:
@@ -82,8 +82,8 @@ jobs:
           git config --global log.date iso
           git config --global log.decorate short
           git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t locale-mul_zz -f
-          git push origin upstream/locale-mul_zz:locale-mul_zz -f
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t locale-mul_zz
+          git push origin upstream/locale-mul_zz:refs/heads/locale-mul_zz -f
   mingw-w64-zlib:
     runs-on: ubuntu-latest
     steps:
@@ -97,8 +97,8 @@ jobs:
           git config --global log.date iso
           git config --global log.decorate short
           git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t mingw-w64-zlib -f
-          git push origin upstream/mingw-w64-zlib:mingw-w64-zlib -f
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t mingw-w64-zlib
+          git push origin upstream/mingw-w64-zlib:refs/heads/mingw-w64-zlib -f
   nsis:
     runs-on: ubuntu-latest
     steps:
@@ -112,8 +112,8 @@ jobs:
           git config --global log.date iso
           git config --global log.decorate short
           git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t nsis -f
-          git push origin upstream/nsis:nsis -f
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t nsis
+          git push origin upstream/nsis:refs/heads/nsis -f
   python310:
     runs-on: ubuntu-latest
     steps:
@@ -127,8 +127,8 @@ jobs:
           git config --global log.date iso
           git config --global log.decorate short
           git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t python310 -f
-          git push origin upstream/python310:python310 -f
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t python310
+          git push origin upstream/python310:refs/heads/python310 -f
   python311:
     runs-on: ubuntu-latest
     steps:
@@ -142,8 +142,8 @@ jobs:
           git config --global log.date iso
           git config --global log.decorate short
           git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t python311 -f
-          git push origin upstream/python311:python311 -f
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t python311
+          git push origin upstream/python311:refs/heads/python311 -f
   python312:
     runs-on: ubuntu-latest
     steps:
@@ -157,8 +157,23 @@ jobs:
           git config --global log.date iso
           git config --global log.decorate short
           git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t python312 -f
-          git push origin upstream/python312:python312 -f
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t python312
+          git push origin upstream/python312:refs/heads/python312 -f
+  python313:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t python313
+          git push origin upstream/python313:refs/heads/python313 -f
   xgterm-bin:
     runs-on: ubuntu-latest
     steps:
@@ -172,8 +187,8 @@ jobs:
           git config --global log.date iso
           git config --global log.decorate short
           git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t xgterm-bin -f
-          git push origin upstream/xgterm-bin:xgterm-bin -f
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t xgterm-bin
+          git push origin upstream/xgterm-bin:refs/heads/xgterm-bin -f
   yay:
     runs-on: ubuntu-latest
     steps:
@@ -187,5 +202,5 @@ jobs:
           git config --global log.date iso
           git config --global log.decorate short
           git remote -v
-          git remote add  upstream https://github.com/archlinux/aur.git -t yay -f
-          git push origin upstream/yay:yay -f
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t yay
+          git push origin upstream/yay:refs/heads/yay -f

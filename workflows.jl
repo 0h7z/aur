@@ -114,8 +114,8 @@ const ACT_SYNC(pkgbase::SymOrStr) = ACT_RUN("""
 	git config --global log.date iso
 	git config --global log.decorate short
 	git remote -v
-	git remote add  upstream $URL_AUR.git -t $pkgbase -f
-	git push origin upstream/$pkgbase:$pkgbase -f"""
+	git remote add  upstream $URL_AUR.git  -f -t $pkgbase
+	git push origin upstream/$pkgbase:refs/heads/$pkgbase -f"""
 )
 const ACT_UPDT(dict::AbstractDict, rel::SymOrStr) = ACT_RUN.(strip("""
 	mkdir .github/packages/$pkg -p
@@ -337,6 +337,7 @@ const pkg = ODict{Vector{String}, PackageMeta}(
 	["python310"]                  => (0, 1, 1, "3.10.22-1"),
 	["python311"]                  => (0, 1, 1, "3.11.18-1"),
 	["python312"]                  => (0, 1, 1, "3.12.16-1"),
+	["python313"]                  => (0, 1, 1, "3.13.9-1"),
 	["xgterm-bin"]                 => (0, 1, 0, "2.2-1"),
 	["yay"]                        => (1, 1, 0, "13.1.0-1"),
 	# EOL
