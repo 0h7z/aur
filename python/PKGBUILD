@@ -6,14 +6,14 @@
 # Contributor: Jason Chu <jason@archlinux.org>
 
 pkgname=python
-pkgver=3.13.9
+pkgver=3.14.10
 pkgrel=1
 _pybasever=${pkgver%.*}
 pkgdesc="The Python programming language"
 arch=("x86_64")
 license=("PSF-2.0")
 url="https://www.python.org/"
-depends=("bzip2" "expat" "gdbm" "libffi" "libnsl" "libxcrypt" "openssl" "zlib" "tzdata" "mpdecimal")
+depends=("bzip2" "expat" "gdbm" "libffi" "libnsl" "libxcrypt" "openssl-3" "zlib" "tzdata" "mpdecimal" "zstd")
 makedepends=("tk" "sqlite" "bluez-libs" "llvm" "gdb" "xorg-server-xvfb" "ttf-font")
 optdepends=(
 	"python-setuptools: for building Python packages using tooling that is usually bundled with Python"
@@ -24,12 +24,14 @@ optdepends=(
 	"tk: for tkinter"
 )
 source=(
-	https://www.python.org/ftp/python/${pkgver%rc*}/Python-${pkgver}.tar.xz{,.asc}
+	https://www.python.org/ftp/python/${pkgver%rc*}/Python-${pkgver}.tar.xz
 	EXTERNALLY-MANAGED
+	python-posix-2024.patch::https://github.com/python/cpython/commit/927eb448aad6436d794ec9f55780013e25609600.patch
 )
 sha512sums=(
-	"f7559b6dceae69f48742af0a6497fbec42cd1e5304f64b6eb9d89222a1171ccf12fa186cc0decabb4e98d05223184967a4a7537754c01083dacdc9073cb1a578" "SKIP"
-	"3d0a4723426e81f21fa49d4f9c14e2f73a7473f26feaeaf30ab38b2a31f7c62b327d4c319ed392f0e3105cba33e1083ac7866175ccb51440a015123ea3b10973"
+	"730ea64f7e8815a5e1a4280b1205d77719875de630e6807b3140987b44e7b91215918cf75ed77250cf6feb5de98ff4175555cbba96eaf32564d2f421e723994a"
+	"62a6fbfbaeaa3ba7c54e109d9c3b7f67e73bb21986da4c1fcc5d28cca83d71e0fcae28e1fc70ee8ddce7dea8cd0b64e18d1031dae3a2eae5eaa379c53efd53a0"
+	"4068d770c906757e7db1f16672f19d31bc75c73eec542c9eb9a7181ff486b898a97874f798bc655b0390cf4880096da1659b0012fad7bea587a1713c9ab8efc7"
 )
 validpgpkeys=(
 	"0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D" # Ned Deily (Python release signing key) <nad@python.org>
@@ -45,6 +47,9 @@ prepare() {
 	# rather than copies shipped in the tarball
 	rm -r Modules/expat
 	rm -r Modules/_decimal/libmpdec
+
+	# Build Python with POSIX 2024 https://github.com/python/cpython/commit/927eb448aad6436d794ec9f55780013e25609600
+	patch -p1 < ../python-posix-2024.patch
 }
 
 build() {
@@ -54,12 +59,13 @@ build() {
 	CFLAGS="${CFLAGS/-O2/-O3} -ffat-lto-objects"
 
 	# Disable bundled pip & setuptools
-	./configure \
+	PKG_CONFIG_PATH=/usr/lib/openssl-3/pkgconfig \
+		./configure \
 		--prefix=/usr \
 		--enable-shared \
 		--with-computed-gotos \
 		--enable-optimizations \
-		--with-lto=no \
+		--with-lto \
 		--enable-ipv6 \
 		--with-system-expat \
 		--with-dbmliborder=gdbm:ndbm \

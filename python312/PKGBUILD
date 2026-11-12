@@ -8,23 +8,25 @@
 
 pkgname=python312
 pkgver=3.12.16
-pkgrel=1
+pkgrel=2
 _pybasever=${pkgver%.*}
-pkgdesc="The Python programming language (version 3.12)"
+pkgdesc="The Python programming language (version $_pybasever)"
 arch=("x86_64" "aarch64")
 license=("PSF-2.0")
 url="https://www.python.org/"
-depends=("mpdecimal")
+depends=("mpdecimal" "openssl-3")
 makedepends=("gdb" "tk")
 optdepends=("python-pip" "python-pipx" "python-setuptools" "tk")
 options=(strip !debug !lto)
 source=(
 	https://www.python.org/ftp/python/${pkgver%rc*}/Python-${pkgver}.tar.xz #{,.asc}
 	EXTERNALLY-MANAGED
+	144310.patch
 )
 sha256sums=(
 	"b5796915dc45ff745cfb4e990a7e7c93d6f546328a102ce31448d69ebc37575c"
 	"d96bca8f7be0d1a83eb88f7c40924434168b1cb8a57870a55ad34207a3718c0a"
+	"68f036a167a8087dad8f252726acd6ac78ead45980a070e6d45ef079af83d448"
 )
 validpgpkeys=(
 	# "0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D" # Ned Deily (Python release signing key) <nad@python.org>
@@ -43,6 +45,9 @@ prepare() {
 	# rather than copies shipped in the tarball
 	rm -r Modules/expat
 	rm -r Modules/_decimal/libmpdec
+
+	# Build Python with POSIX 2024 https://github.com/python/cpython/commit/927eb448aad6436d794ec9f55780013e25609600
+	patch -p1 < ../144310.patch
 }
 
 build() {
@@ -52,7 +57,8 @@ build() {
 	CFLAGS="${CFLAGS/-O2/-O3} -ffat-lto-objects"
 
 	# Disable bundled pip & setuptools
-	./configure \
+	PKG_CONFIG_PATH=/usr/lib/openssl-3/pkgconfig \
+		./configure \
 		--prefix=/usr \
 		--enable-shared \
 		--with-computed-gotos \
@@ -64,6 +70,7 @@ build() {
 		--with-system-libmpdec \
 		--enable-loadable-sqlite-extensions \
 		--without-ensurepip \
+		--with-openssl-rpath=auto \
 		--with-tzpath=/usr/share/zoneinfo
 
 	make EXTRA_CFLAGS="$CFLAGS"
