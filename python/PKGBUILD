@@ -23,6 +23,8 @@ optdepends=(
 	"xz: for lzma"
 	"tk: for tkinter"
 )
+# provides=("python3" "python-externally-managed")
+# replaces=("python3" "python-externally-managed")
 source=(
 	https://www.python.org/ftp/python/${pkgver%rc*}/Python-${pkgver}.tar.xz
 	EXTERNALLY-MANAGED
