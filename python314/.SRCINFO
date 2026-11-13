@@ -1,0 +1,27 @@
+pkgbase = python314
+	pkgdesc = The Python programming language (version 3.14)
+	pkgver = 3.14.10
+	pkgrel = 1
+	url = https://www.python.org/
+	arch = x86_64
+	arch = aarch64
+	license = PSF-2.0
+	makedepends = gdb
+	makedepends = tk
+	depends = mpdecimal
+	depends = openssl-3
+	optdepends = python-pip
+	optdepends = python-pipx
+	optdepends = python-setuptools
+	optdepends = tk
+	options = strip
+	options = !debug
+	options = !lto
+	source = https://www.python.org/ftp/python/3.14.10/Python-3.14.10.tar.xz
+	source = EXTERNALLY-MANAGED
+	source = 144310.patch
+	sha256sums = de414a57119abef52784d8993e341d53aed635fc2b05c2607d9f98a2c5b72032
+	sha256sums = d96bca8f7be0d1a83eb88f7c40924434168b1cb8a57870a55ad34207a3718c0a
+	sha256sums = 68f036a167a8087dad8f252726acd6ac78ead45980a070e6d45ef079af83d448
+
+pkgname = python314
