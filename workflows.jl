@@ -339,7 +339,7 @@ const pkg = ODict{Vector{String}, PackageMeta}(
 	["python312"]                  => (0, 1, 1, "3.12.16-2"),
 	["python313"]                  => (0, 1, 1, "3.13.18-1"),
 	["python314"]                  => (0, 1, 0, "3.14.10-1"), # https://archlinux.org/packages/core/x86_64/python/
-	["python315"]                  => (0, 1, 0, "3.15.2-1"),
+	["python315"]                  => (0, 1, 1, "3.15.2-1"),
 	["xgterm-bin"]                 => (0, 1, 0, "2.2-1"),
 	["yay"]                        => (1, 1, 0, "13.1.0-1"),
 	# EOL
