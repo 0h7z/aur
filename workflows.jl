@@ -333,14 +333,14 @@ const pkg = ODict{Vector{String}, PackageMeta}(
 	["libcurl-julia-bin"]          => (1, 1, 0, "1.11-1"),
 	["locale-mul_zz"]              => (0, 1, 0, "2.0-3"),
 	["mingw-w64-zlib-gcc", "nsis"] => (1, 0, 0, "3.13-2"),
-	["mingw-w64-zlib-gcc"]         => (0, 0, 1, "1.3.2-1"),
+	["mingw-w64-zlib-gcc"]         => (0, 0, 1, "1.4-1"),
 	["python310"]                  => (0, 1, 1, "3.10.22-2"),
 	["python311"]                  => (0, 1, 1, "3.11.18-2"),
 	["python312"]                  => (0, 1, 1, "3.12.16-2"),
 	["python313"]                  => (0, 1, 1, "3.13.18-1"),
 	["python314"]                  => (0, 1, 0, "3.14.10-1"), # https://archlinux.org/packages/core/x86_64/python/
 	["python315"]                  => (0, 1, 1, "3.15.2-1"),
-	["python316"]                  => (0, 0, 1, "3.16.0a2-1"),
+	["python316"]                  => (0, 1, 1, "3.16.0a2-1"),
 	["xgterm-bin"]                 => (0, 1, 0, "2.2-1"),
 	["yay"]                        => (1, 1, 0, "13.1.0-1"),
 	# EOL

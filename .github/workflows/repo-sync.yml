@@ -204,6 +204,21 @@ jobs:
           git remote -v
           git remote add  upstream https://github.com/archlinux/aur.git  -f -t python315
           git push origin upstream/python315:refs/heads/python315 -f
+  python316:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t python316
+          git push origin upstream/python316:refs/heads/python316 -f
   xgterm-bin:
     runs-on: ubuntu-latest
     steps:
