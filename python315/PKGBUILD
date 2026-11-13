@@ -49,8 +49,7 @@ build() {
 	CFLAGS="${CFLAGS/-O2/-O3} -ffat-lto-objects"
 
 	# Disable bundled pip & setuptools
-	PKG_CONFIG_PATH=/usr/lib/openssl-3/pkgconfig \
-		./configure \
+	./configure \
 		--prefix=/usr \
 		--enable-shared \
 		--with-computed-gotos \
@@ -62,7 +61,6 @@ build() {
 		--with-system-libmpdec \
 		--enable-loadable-sqlite-extensions \
 		--without-ensurepip \
-		--with-openssl-rpath=auto \
 		--with-tzpath=/usr/share/zoneinfo
 
 	make EXTRA_CFLAGS="$CFLAGS"
