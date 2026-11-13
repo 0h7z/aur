@@ -9,7 +9,6 @@ pkgbase = python315
 	makedepends = gdb
 	makedepends = tk
 	depends = mpdecimal
-	depends = openssl-3
 	optdepends = python-pip
 	optdepends = python-pipx
 	optdepends = python-setuptools
