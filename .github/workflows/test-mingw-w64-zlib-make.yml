@@ -4,7 +4,7 @@ on:
     branches:
       - "master"
     paths:
-      - "mingw-w64-zlib-gcc/**"
+      - "mingw-w64-zlib-make/**"
 
 jobs:
   makepkg:
@@ -40,7 +40,7 @@ jobs:
           token: ${{ secrets.PAT }}
       - run: patch -d / -lp1 < makepkg.patch
       - run: |-
-          cd mingw-w64-zlib-gcc
+          cd mingw-w64-zlib-make
           updpkgsums
           makepkg --printsrcinfo > .SRCINFO
           git diff --patch-with-stat -w .
@@ -54,7 +54,7 @@ jobs:
           echo '${{ secrets.SSH_PUB }}'    > ~/.ssh/id_ecdsa.pub
           echo '${{ secrets.SSH_KEY }}'    > ~/.ssh/id_ecdsa
           chmod 400 ~/.ssh/id*
-          git add --all && git commit --allow-empty-message -m $'Update mingw-w64-zlib-gcc\n[skip ci]' || true
+          git add --all && git commit --allow-empty-message -m $'Update mingw-w64-zlib-make\n[skip ci]' || true
           git fetch -qt; i=1; while true; do ((i++ < 05)) || exit 1
           git pull -ftp && git push |& tee /tmp/push
           grep $'error: failed to push some refs to' /tmp/push -aw || break; sleep $i; done
@@ -66,7 +66,7 @@ jobs:
           echo '```'     >> /tmp/md && sed 's/\x1b\[[0-9;]*m//g' /tmp/md | jq -Rs $'{ body: . }' > /tmp/md.json
           echo $u && curl -LX POST -H 'Authorization: token ${{ secrets.PAT }}' -d @/tmp/md.json $u | jq -Cr .html_url
       - run: |-
-          cd mingw-w64-zlib-gcc
+          cd mingw-w64-zlib-make
           git rev-parse HEAD | tee ../head
           makepkg -si --noconfirm
           mv -vt .. *.pkg.tar.zst

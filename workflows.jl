@@ -326,23 +326,23 @@ Base.convert(::Type{PackageMeta}, xs::Tuple) = PackageMeta(xs...)
 
 # https://aur.archlinux.org/packages
 const pkg = ODict{Vector{String}, PackageMeta}(
-	# [depends..., pkgbase]        => (m, s, t, ver-rel),
-	["apt-zsh-completion"]         => (0, 1, 1, "5.9-1"),
-	["conda-zsh-completion"]       => (0, 1, 0, "0.11-1"),
-	["iraf-bin"]                   => (1, 1, 1, "2.18.2-1"),
-	["libcurl-julia-bin"]          => (1, 1, 0, "1.11-1"),
-	["locale-mul_zz"]              => (0, 1, 0, "2.0-3"),
-	["mingw-w64-zlib-gcc", "nsis"] => (1, 0, 0, "3.13-2"),
-	["mingw-w64-zlib-gcc"]         => (0, 0, 1, "1.4-1"),
-	["python310"]                  => (0, 1, 1, "3.10.22-2"),
-	["python311"]                  => (0, 1, 1, "3.11.18-2"),
-	["python312"]                  => (0, 1, 1, "3.12.16-2"),
-	["python313"]                  => (0, 1, 1, "3.13.18-1"),
-	["python314"]                  => (0, 1, 0, "3.14.10-1"), # https://archlinux.org/packages/core/x86_64/python/
-	["python315"]                  => (0, 1, 1, "3.15.2-1"),
-	["python316"]                  => (0, 1, 1, "3.16.0a2-1"),
-	["xgterm-bin"]                 => (0, 1, 0, "2.2-1"),
-	["yay"]                        => (1, 1, 0, "13.1.0-1"),
+	# [depends..., pkgbase]         => (m, s, t, ver-rel),
+	["apt-zsh-completion"]          => (0, 1, 1, "5.9-1"),
+	["conda-zsh-completion"]        => (0, 1, 0, "0.11-1"),
+	["iraf-bin"]                    => (1, 1, 1, "2.18.2-1"),
+	["libcurl-julia-bin"]           => (1, 1, 0, "1.11-1"),
+	["locale-mul_zz"]               => (0, 1, 0, "2.0-3"),
+	["mingw-w64-zlib-make", "nsis"] => (1, 0, 0, "3.13-2"),
+	["mingw-w64-zlib-make"]         => (0, 0, 1, "1.4-1"),
+	["python310"]                   => (0, 1, 1, "3.10.22-2"),
+	["python311"]                   => (0, 1, 1, "3.11.18-2"),
+	["python312"]                   => (0, 1, 1, "3.12.16-2"),
+	["python313"]                   => (0, 1, 1, "3.13.18-1"),
+	["python314"]                   => (0, 1, 0, "3.14.10-1"), # https://archlinux.org/packages/core/x86_64/python/
+	["python315"]                   => (0, 1, 1, "3.15.2-1"),
+	["python316"]                   => (0, 1, 1, "3.16.0a2-1"),
+	["xgterm-bin"]                  => (0, 1, 0, "2.2-1"),
+	["yay"]                         => (1, 1, 0, "13.1.0-1"),
 	# EOL
 	["7-zip-full"]             => (0, 0, 0, "24.09-1"), # https://archlinux.org/packages/extra/x86_64/7zip/
 	["glibc-linux4"]           => (0, 0, 0, "2.38-1"),  # [PRQ#75686] XD
@@ -351,8 +351,8 @@ const pkg = ODict{Vector{String}, PackageMeta}(
 	["wine64"]                 => (0, 0, 0, "10.6-1"),
 )
 for (k, v) ∈ pkg
-	_ = v.make ? makepkg(k, v.version) :
-		v.test ? makepkg(k) : 0
+	v.make && makepkg(k, v.version)
+	v.test && makepkg(k)
 end
 syncpkg(sort!(reduce(∪, findall(v -> v.sync, pkg))))
 
