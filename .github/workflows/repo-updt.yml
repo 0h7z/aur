@@ -53,7 +53,7 @@ jobs:
           apt list -a iraf iraf-noao 2> /dev/null || true
           apt-cache show iraf/sid iraf-noao/sid | tee package.txt
           deb=$(cat package.txt | grep -Pom1 '^Version: \K\S+')
-          pkg=${deb/~rc/rc} && cd - && cd iraf-bin
+          pkg=${deb/~rc/rc} && cd - && cd iraf-bin || exit 0
           ver=$(cat PKGBUILD | grep -Po '^pkgver=\K\S+')
           rel=$(cat PKGBUILD | grep -Po '^pkgrel=\K\S+')
           [[ ${ver} != ${pkg/[+-]*/} ]] && rel=1 && ver="${pkg/[+-]*/}" ||
@@ -68,7 +68,22 @@ jobs:
           apt list -a xgterm 2> /dev/null || true
           apt-cache show xgterm/sid | tee package.txt
           deb=$(cat package.txt | grep -Pom1 '^Version: \K\S+')
-          pkg=${deb/~rc/rc} && cd - && cd xgterm-bin
+          pkg=${deb/~rc/rc} && cd - && cd xgterm-bin || exit 0
+          ver=$(cat PKGBUILD | grep -Po '^pkgver=\K\S+')
+          rel=$(cat PKGBUILD | grep -Po '^pkgrel=\K\S+')
+          [[ ${ver} != ${pkg/[+-]*/} ]] && rel=1 && ver="${pkg/[+-]*/}" ||
+          [[ ${deb} == $(cat PKGBUILD | grep -Po '^debver=\K\S+') ]] || ((rel++))
+          sed -re "s/^(debver)=.+/\1=$deb/" -i PKGBUILD
+          sed -re "s/^(pkgver)=.+/\1=$ver/" -i PKGBUILD
+          sed -re "s/^(pkgrel)=.+/\1=$rel/" -i PKGBUILD
+          updpkgsums && makepkg --printsrcinfo > .SRCINFO
+      - run: |-
+          mkdir .github/packages/zramswap -p
+          cd -- .github/packages/zramswap
+          apt list -a zram-tools 2> /dev/null || true
+          apt-cache show zram-tools/sid | tee package.txt
+          deb=$(cat package.txt | grep -Pom1 '^Version: \K\S+')
+          pkg=${deb/~rc/rc} && cd - && cd zramswap || exit 0
           ver=$(cat PKGBUILD | grep -Po '^pkgver=\K\S+')
           rel=$(cat PKGBUILD | grep -Po '^pkgrel=\K\S+')
           [[ ${ver} != ${pkg/[+-]*/} ]] && rel=1 && ver="${pkg/[+-]*/}" ||

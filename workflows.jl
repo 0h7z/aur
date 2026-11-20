@@ -123,7 +123,7 @@ const ACT_UPDT(dict::AbstractDict, rel::SymOrStr) = ACT_RUN.(strip("""
 	apt list -a $(join(src, " ")) 2> /dev/null || true
 	apt-cache show $(join(src .* "/$rel", " ")) | tee package.txt
 	deb=\$(cat package.txt | grep -Pom1 '^Version: \\K\\S+')
-	pkg=\${deb/~rc/rc} && cd - && cd $pkg
+	pkg=\${deb/~rc/rc} && cd - && cd $pkg || exit 0
 	ver=\$(cat PKGBUILD | grep -Po '^pkgver=\\K\\S+')
 	rel=\$(cat PKGBUILD | grep -Po '^pkgrel=\\K\\S+')
 	[[ \${ver} != \${pkg/[+-]*/} ]] && \
@@ -323,6 +323,8 @@ Base.convert(::Type{PackageMeta}, xs::Tuple) = PackageMeta(xs...)
 
 # [PRQ#75686] Deletion Request for glibc-linux4
 # https://lists.archlinux.org/archives/list/aur-requests@lists.archlinux.org/thread/PZGC6QWQGSD4INVF7X4H2B5Y7XMESV3E/
+# [PRQ#89524] Adoption Request for zramswap
+# https://lists.archlinux.org/archives/list/aur-requests@lists.archlinux.org/thread/XLFEJTXGNLGEPBVC6OJW4VQGCTLZIUF2/
 
 # https://aur.archlinux.org/packages
 const pkg = ODict{Vector{String}, PackageMeta}(
@@ -361,6 +363,7 @@ const deb = ODict{String, Vector{String}}(
 	# (pkgbase)    => [provides...],
 	("iraf-bin")   => ["iraf", "iraf-noao"],
 	("xgterm-bin") => ["xgterm"],
+	("zramswap")   => ["zram-tools"],
 )
 updtpkg(deb, "sid")
 
