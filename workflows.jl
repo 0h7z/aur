@@ -91,7 +91,7 @@ const ACT_PUSH(msg::SymOrStr...; m = cquote(join(msg, "\n"))) = ACT_RUN("""
 	git pull -ftp && git push |& tee /tmp/push
 	grep $(cquote(PUSH_REJ)) /tmp/push -aw || break; sleep \$i; done
 	git rev-parse HEAD | tee /tmp/head
-	sha=`cat /tmp/head` u=\${{ github.api_url }}/repos/\
+	sha=`cat /tmp/head`; u=\${{ github.api_url }}/repos/\
 	\${{ github.repository }}/commits/\$sha/comments
 	grep $(cquote(PUSH_NOP)) /tmp/push -ax && exit
 	echo @Heptazhou > /tmp/md
@@ -117,13 +117,13 @@ const ACT_SYNC(pkgbase::SymOrStr) = ACT_RUN("""
 	git remote add  upstream $URL_AUR.git  -f -t $pkgbase
 	git push origin upstream/$pkgbase:refs/heads/$pkgbase -f"""
 )
-const ACT_UPDT(dict::AbstractDict, rel::SymOrStr) = ACT_RUN.(strip("""
+const ACT_UPDT(::Val{:deb}, dict::AbstractDict, rel::SymOrStr) = ACT_RUN.(strip("""
 	mkdir .github/packages/$pkg -p
 	cd -- .github/packages/$pkg
 	apt list -a $(join(src, " ")) 2> /dev/null || true
 	apt-cache show $(join(src .* "/$rel", " ")) | tee package.txt
 	deb=\$(cat package.txt | grep -Pom1 '^Version: \\K\\S+')
-	pkg=\${deb/~rc/rc} && cd - && cd $pkg || exit 0
+	pkg=\${deb/~rc/rc}; cd - && cd $pkg || exit 0
 	ver=\$(cat PKGBUILD | grep -Po '^pkgver=\\K\\S+')
 	rel=\$(cat PKGBUILD | grep -Po '^pkgrel=\\K\\S+')
 	[[ \${ver} != \${pkg/[+-]*/} ]] && \
@@ -135,6 +135,20 @@ const ACT_UPDT(dict::AbstractDict, rel::SymOrStr) = ACT_RUN.(strip("""
 	sed -re "s/^(pkgrel)=.+/\\1=\$rel/" -i PKGBUILD
 	updpkgsums && makepkg --printsrcinfo > .SRCINFO
 	""") for (pkg::String, src::Vector{String}) ∈ dict
+)
+const ACT_UPDT(::Val{:py3}, nums::Vector; py::Symbol = :python) = ACT_RUN(strip("""
+	for n in $(join(nums, ' ')); do u=https://www.$(py).org/downloads/latest/$(py)3.\$n/
+	dir=\${GITHUB_WORKSPACE}; cd \$dir; echo; echo \$u
+	str=\$(curl -Iso/dev/stderr -fw%{redirect_url} \$u | grep -Po "/$(py)-3\$n\\K[^/]+")
+	pkg=\${str/#/3.\$n.}; echo v\$pkg; cd $(py)3\$n || continue
+	ver=\$(cat PKGBUILD | grep -Po '^pkgver=\\K\\S+')
+	rel=\$(cat PKGBUILD | grep -Po '^pkgrel=\\K\\S+')
+	[[ \${ver} != \${pkg/[+-]*/} ]] && \
+	rel=1 && ver="\${pkg/[+-]*/}" || continue
+	sed -re "s/^(pkgver)=.+/\\1=\$ver/" -i PKGBUILD
+	sed -re "s/^(pkgrel)=.+/\\1=\$rel/" -i PKGBUILD
+	updpkgsums && makepkg --printsrcinfo > .SRCINFO
+	done""")
 )
 
 const JOB_MAKE(pkgbases::Vector{String}, tag::SymOrStr) = LDict(
@@ -205,7 +219,7 @@ const JOB_SYNC(pkgbase::String) = LDict(
 		ACT_SYNC(pkgbase)
 	],
 )
-const JOB_UPDT(dict::AbstractDict, rel::SymOrStr) = LDict(
+const JOB_UPDT(dict::AbstractDict) = LDict(
 	S"container" => S"archlinux:base-devel",
 	S"runs-on" => S"ubuntu-latest",
 	S"steps" => [
@@ -222,7 +236,8 @@ const JOB_UPDT(dict::AbstractDict, rel::SymOrStr) = LDict(
 			sed  's/Retries "0"/Retries "3"/' -i /etc/apt/apt.conf
 			apt update 2> /dev/null"""
 		)
-		ACT_UPDT(dict, rel)
+		ACT_UPDT(Val(:deb), dict[:deb]...)
+		ACT_UPDT(Val(:py3), dict[:py3]...)
 		ACT_PUSH("Update")
 	],
 )
@@ -292,7 +307,7 @@ function syncpkg(pkgbases::Vector{String})::Int
 		),
 	)
 end
-function updtpkg(dict::AbstractDict, rel::SymOrStr)::Int
+function updtpkg(dict::AbstractDict)::Int
 	f = ".github/workflows/repo-updt.yml"
 	mkpath(dirname(f))
 	write(f,
@@ -306,7 +321,7 @@ function updtpkg(dict::AbstractDict, rel::SymOrStr)::Int
 				:schedule => [LDict(:cron => "0 */8 * * *")],
 			),
 			:jobs => LDict(
-				:updtpkg => JOB_UPDT(dict, rel),
+				:updtpkg => JOB_UPDT(dict),
 			),
 			delim = "\n",
 		),
@@ -345,6 +360,7 @@ const pkg = ODict{Vector{String}, PackageMeta}(
 	["python316"]                   => (0, 1, 1, "3.16.0a2-1"),
 	["xgterm-bin"]                  => (0, 1, 0, "2.2-1"),
 	["yay"]                         => (1, 1, 0, "13.1.0-1"),
+	["zramswap"]                    => (0, 0, 0, "0.3.7-1"),
 	# EOL
 	["7-zip-full"]             => (0, 0, 0, "24.09-1"), # https://archlinux.org/packages/extra/x86_64/7zip/
 	["glibc-linux4"]           => (0, 0, 0, "2.38-1"),  # [PRQ#75686] XD
@@ -365,7 +381,16 @@ const deb = ODict{String, Vector{String}}(
 	("xgterm-bin") => ["xgterm"],
 	("zramswap")   => ["zram-tools"],
 )
-updtpkg(deb, "sid")
+# https://devguide.python.org/versions/
+const py3 = let p = filter!(isdir, readdir()), s = "python3"
+	v = chopprefix.(filter!(startswith(s * r"\d+$"), p), s)
+	r = parse.(Int, v)
+end
+# ACT_UPDT
+updtpkg(ODict{Symbol, Vector}(
+	(:deb) => [deb, :sid],
+	(:py3) => [py3],
+))
 
 for p ∈ filter!(isdir, readdir())
 	q = "../AUR.$p"

@@ -59,7 +59,7 @@ jobs:
           git pull -ftp && git push |& tee /tmp/push
           grep $'error: failed to push some refs to' /tmp/push -aw || break; sleep $i; done
           git rev-parse HEAD | tee /tmp/head
-          sha=`cat /tmp/head` u=${{ github.api_url }}/repos/${{ github.repository }}/commits/$sha/comments
+          sha=`cat /tmp/head`; u=${{ github.api_url }}/repos/${{ github.repository }}/commits/$sha/comments
           grep $'Everything up-to-date' /tmp/push -ax && exit
           echo @Heptazhou > /tmp/md
           echo '```s'    >> /tmp/md && git show --stat -w | tee -a /tmp/md
