@@ -136,11 +136,11 @@ const ACT_UPDT(::Val{:deb}, dict::AbstractDict, rel::SymOrStr) = ACT_RUN.(strip(
 	updpkgsums && makepkg --printsrcinfo > .SRCINFO
 	""") for (pkg::String, src::Vector{String}) ∈ dict
 )
-const ACT_UPDT(::Val{:py3}, nums::Vector; py::Symbol = :python) = ACT_RUN(strip("""
-	for n in $(join(nums, ' ')); do u=https://www.$(py).org/downloads/latest/$(py)3.\$n/
-	dir=\${GITHUB_WORKSPACE}; cd \$dir; echo; echo \$u
-	str=\$(curl -Iso/dev/stderr -fw%{redirect_url} \$u | grep -Po "/$(py)-3\$n\\K[^/]+")
-	pkg=\${str/#/3.\$n.}; echo v\$pkg; cd $(py)3\$n || continue
+const ACT_UPDT(::Val{:py3}, min::IntOrStr, max::IntOrStr) = ACT_RUN(strip("""
+	for x in {$min..$max}; do u=https://www.python.org/downloads/latest/python3.\$x/
+	dir=\${GITHUB_WORKSPACE}; cd \$dir; echo; echo \$u; r="/python-3\$x\\K[^/]+"
+	str=\$(curl -Io/dev/stderr -sw%{redirect_url} \$u | grep -Po \$r) || continue
+	pkg=\${str/#/3.\$x.}; echo v\$pkg; cd python3\$x || continue
 	ver=\$(cat PKGBUILD | grep -Po '^pkgver=\\K\\S+')
 	rel=\$(cat PKGBUILD | grep -Po '^pkgrel=\\K\\S+')
 	[[ \${ver} != \${pkg/[+-]*/} ]] && \
@@ -360,7 +360,7 @@ const pkg = ODict{Vector{String}, PackageMeta}(
 	["python316"]                   => (0, 1, 1, "3.16.0a2-1"),
 	["xgterm-bin"]                  => (0, 1, 0, "2.2-1"),
 	["yay"]                         => (1, 1, 0, "13.1.0-1"),
-	["zramswap"]                    => (0, 0, 0, "0.3.7-1"),
+	["zramswap"]                    => (0, 1, 0, "0.3.7-1"),
 	# EOL
 	["7-zip-full"]             => (0, 0, 0, "24.09-1"), # https://archlinux.org/packages/extra/x86_64/7zip/
 	["glibc-linux4"]           => (0, 0, 0, "2.38-1"),  # [PRQ#75686] XD
@@ -382,14 +382,11 @@ const deb = ODict{String, Vector{String}}(
 	("zramswap")   => ["zram-tools"],
 )
 # https://devguide.python.org/versions/
-const py3 = let p = filter!(isdir, readdir()), s = "python3"
-	v = chopprefix.(filter!(startswith(s * r"\d+$"), p), s)
-	r = parse.(Int, v)
-end
+const py3 = extrema(10:16)
 # ACT_UPDT
 updtpkg(ODict{Symbol, Vector}(
 	(:deb) => [deb, :sid],
-	(:py3) => [py3],
+	(:py3) => [py3...],
 ))
 
 for p ∈ filter!(isdir, readdir())

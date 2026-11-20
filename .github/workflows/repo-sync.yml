@@ -249,3 +249,18 @@ jobs:
           git remote -v
           git remote add  upstream https://github.com/archlinux/aur.git  -f -t yay
           git push origin upstream/yay:refs/heads/yay -f
+  zramswap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: true
+          token: ${{ secrets.PAT }}
+      - run: |-
+          git version
+          git config --global color.ui always
+          git config --global log.date iso
+          git config --global log.decorate short
+          git remote -v
+          git remote add  upstream https://github.com/archlinux/aur.git  -f -t zramswap
+          git push origin upstream/zramswap:refs/heads/zramswap -f

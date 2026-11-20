@@ -93,10 +93,10 @@ jobs:
           sed -re "s/^(pkgrel)=.+/\1=$rel/" -i PKGBUILD
           updpkgsums && makepkg --printsrcinfo > .SRCINFO
       - run: |-
-          for n in 10 11 12 13 14 15 16; do u=https://www.python.org/downloads/latest/python3.$n/
-          dir=${GITHUB_WORKSPACE}; cd $dir; echo; echo $u
-          str=$(curl -Iso/dev/stderr -fw%{redirect_url} $u | grep -Po "/python-3$n\K[^/]+")
-          pkg=${str/#/3.$n.}; echo v$pkg; cd python3$n || continue
+          for x in {10..16}; do u=https://www.python.org/downloads/latest/python3.$x/
+          dir=${GITHUB_WORKSPACE}; cd $dir; echo; echo $u; r="/python-3$x\K[^/]+"
+          str=$(curl -Io/dev/stderr -sw%{redirect_url} $u | grep -Po $r) || continue
+          pkg=${str/#/3.$x.}; echo v$pkg; cd python3$x || continue
           ver=$(cat PKGBUILD | grep -Po '^pkgver=\K\S+')
           rel=$(cat PKGBUILD | grep -Po '^pkgrel=\K\S+')
           [[ ${ver} != ${pkg/[+-]*/} ]] && rel=1 && ver="${pkg/[+-]*/}" || continue
