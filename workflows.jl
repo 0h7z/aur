@@ -360,7 +360,7 @@ const pkg = ODict{Vector{String}, PackageMeta}(
 	["python316"]                   => (0, 1, 1, "3.16.0a2-1"),
 	["xgterm-bin"]                  => (0, 1, 0, "2.2-1"),
 	["yay"]                         => (1, 1, 0, "13.1.0-1"),
-	["zramswap"]                    => (0, 1, 0, "0.3.7-1"),
+	["zramswap"]                    => (0, 1, 1, "0.3.7-1"),
 	# EOL
 	["7-zip-full"]             => (0, 0, 0, "24.09-1"), # https://archlinux.org/packages/extra/x86_64/7zip/
 	["glibc-linux4"]           => (0, 0, 0, "2.38-1"),  # [PRQ#75686] XD

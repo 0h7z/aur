@@ -1,0 +1,14 @@
+pkgbase = zramswap
+	pkgdesc = Set up swap in zram to compress memory (zram-tools)
+	pkgver = 0.3.7
+	pkgrel = 1
+	url = https://wiki.archlinux.org/title/Zram
+	arch = any
+	license = ISC
+	provides = zram-tools
+	options = !debug
+	backup = etc/default/zramswap
+	source = https://deb.debian.org/debian/pool/main/z/zram-tools/zram-tools_0.3.7-1_all.deb
+	sha256sums = 2c14b4bf37f84197cd0f6b8928d3b44009e524ef9a0b26bbd8028d65e746af6a
+
+pkgname = zramswap
