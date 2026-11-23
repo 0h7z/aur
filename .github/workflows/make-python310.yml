@@ -1,3 +1,6 @@
+env:
+  BASHOPTS: globstar
+
 on:
   workflow_dispatch: ~
   push:

@@ -1,3 +1,6 @@
+env:
+  BASHOPTS: globstar
+
 on:
   workflow_dispatch: ~
   push:
@@ -35,7 +38,7 @@ jobs:
           git config --global safe.directory "*"
           sed -r 's/\b(EUID)\s*==\s*0\b/\1 < -0/' -i /bin/makepkg
           makepkg --version
-      - run: pacman -Syy --color always --noconfirm apt debian-archive-keyring jq openssh
+      - run: pacman -Syy --color always --noconfirm apt debian-archive-keyring jq openssh openssl-3
       - uses: actions/checkout@v5
         with:
           persist-credentials: true
@@ -125,3 +128,4 @@ jobs:
           echo '```s'    >> /tmp/md && git show --stat -w | tee -a /tmp/md
           echo '```'     >> /tmp/md && sed 's/\x1b\[[0-9;]*m//g' /tmp/md | jq -Rs $'{ body: . }' > /tmp/md.json
           echo $u && curl -LX POST -H 'Authorization: token ${{ secrets.PAT }}' -d @/tmp/md.json $u | jq -Cr .html_url
+      - run: openssl -v && echo && ls -lav /lib/**/libssl.so*

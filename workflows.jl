@@ -207,6 +207,16 @@ const JOB_MAKE(pkgbases::Vector{String}) = LDict(
 			S"ls -lav *.pkg.tar.zst"
 		])
 		ACT_ARTIFACT("*.pkg.tar.zst")
+		ACT_RUN.([
+			map(m -> strip("""
+			py=python3.$(m.match) && openssl -v
+			ls -lav /lib/**/libssl.so* && echo
+			\$py -V
+			\$py -c "import  ssl; print( ssl)"
+			\$py -c "import _ssl; print(_ssl)"
+			ldd `\$py -c "import _ssl; print(_ssl.__file__)"`
+			"""), eachmatch(r"^python3\K\d+$", pkgbases[end]))...,
+		])
 	],
 )
 const JOB_SYNC(pkgbase::String) = LDict(
@@ -223,7 +233,7 @@ const JOB_UPDT(dict::AbstractDict) = LDict(
 	S"container" => S"archlinux:base-devel",
 	S"runs-on" => S"ubuntu-latest",
 	S"steps" => [
-		ACT_INIT(["apt", "debian-archive-keyring", "jq", "openssh"])
+		ACT_INIT(["apt", "debian-archive-keyring", "jq", "openssh", "openssl-3"])
 		ACT_CHECKOUT(
 			S"persist-credentials" => true,
 			S"token" => S"${{ secrets.PAT }}",
@@ -239,6 +249,7 @@ const JOB_UPDT(dict::AbstractDict) = LDict(
 		ACT_UPDT(Val(:deb), dict[:deb]...)
 		ACT_UPDT(Val(:py3), dict[:py3]...)
 		ACT_PUSH("Update")
+		ACT_RUN(S"openssl -v && echo && ls -lav /lib/**/libssl.so*")
 	],
 )
 
@@ -251,6 +262,7 @@ function makepkg(pkgbases::Vector{String}, v::String)::Int
 	mkpath(dirname(f))
 	write(f,
 		yaml(
+			:env => LDict(:BASHOPTS => S"globstar"),
 			:on => LDict(
 				:workflow_dispatch => nothing,
 				:push => LDict(
@@ -272,6 +284,7 @@ function makepkg(pkgbases::Vector{String})::Int
 	isdir(p) || return 0
 	write(f,
 		yaml(
+			:env => LDict(:BASHOPTS => S"globstar"),
 			:on => LDict(
 				:workflow_dispatch => nothing,
 				:push => LDict(
@@ -292,6 +305,7 @@ function syncpkg(pkgbases::Vector{String})::Int
 	mkpath(dirname(f))
 	write(f,
 		yaml(
+			:env => LDict(:BASHOPTS => S"globstar"),
 			:on => LDict(
 				:workflow_dispatch => nothing,
 				:push => LDict(
@@ -312,6 +326,7 @@ function updtpkg(dict::AbstractDict)::Int
 	mkpath(dirname(f))
 	write(f,
 		yaml(
+			:env => LDict(:BASHOPTS => S"globstar"),
 			:on => LDict(
 				:workflow_dispatch => nothing,
 				:push => LDict(

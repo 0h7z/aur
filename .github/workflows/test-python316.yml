@@ -1,3 +1,6 @@
+env:
+  BASHOPTS: globstar
+
 on:
   workflow_dispatch: ~
   push:
@@ -75,3 +78,10 @@ jobs:
         with:
           compression-level: 0
           path: "*.pkg.tar.zst"
+      - run: |-
+          py=python3.16 && openssl -v
+          ls -lav /lib/**/libssl.so* && echo
+          $py -V
+          $py -c "import  ssl; print( ssl)"
+          $py -c "import _ssl; print(_ssl)"
+          ldd `$py -c "import _ssl; print(_ssl.__file__)"`
